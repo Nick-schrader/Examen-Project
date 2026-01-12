@@ -17,7 +17,7 @@ export default {
             colors: {
                 eisgroen: '#6E8B3D',
                 eisblue:'#004A7F' ,
-                eisgeel: '#FDF5C4 ',
+                eisgeel: '#FDF5C4',
             },
         },
     },
