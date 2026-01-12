@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('naam');
             $table->string('email')->unique();
-            $table->string('wachtwoord');
+            $table->string('password');
             $table->string('telefoon');
             $table->tinyInteger('type');
             $table->date('geboorte_datum');

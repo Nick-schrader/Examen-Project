@@ -1,10 +1,10 @@
 Database-structuur – Brooklyn Signup (Rijlesbeheer)
 
-ACCOUNT
+USERS
 - id (int, PK)
 - naam (varchar)
 - email (varchar, uniek)
-- wachtwoord (varchar)
+- password (varchar)
 - telefoon (varchar)
 - type (int)
   - 0 = gast

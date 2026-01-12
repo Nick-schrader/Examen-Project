@@ -25,6 +25,10 @@ class User extends Model
         'auto_preference',
     ];
 
+     protected $hidden = [
+        'password',
+    ];
+
     public function strippenkaarten(): HasMany
     {
         return $this->hasMany(Strippenkaart::class, 'leerling_id');
