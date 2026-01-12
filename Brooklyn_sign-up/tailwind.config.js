@@ -17,14 +17,10 @@ export default {
             colors: {
                 eisgroen: '#6E8B3D',
                 eisblue:'#004A7F' ,
-                eisgeel: '#FFD800 ',
+                eisgeel: '#FDF5C4',
             },
         },
     },
  
     plugins: [forms],
 };
- 
- 
- 
- 

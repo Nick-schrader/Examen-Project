@@ -40,7 +40,7 @@
                                 : 'border-b-2 border-transparent text-gray-400'"
                             class="inline-flex items-center px-3 pt-1 pb-2 h-[64px] text-sm leading-4 font-medium bg-eisblue hover:text-white focus:outline-none transition ease-in-out duration-150"
                         >
-                            <div>{{ Auth::user()->name }}</div>
+                            <div>{{ Auth::user()->naam }}</div>
                     
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -105,7 +105,7 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-400">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-gray-400">{{ Auth::user()->naam }}</div>
                 <div class="font-medium text-sm text-gray-400">{{ Auth::user()->email }}</div>
             </div>
 
