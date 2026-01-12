@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('rooster_item_id');
             $table->unsignedTinyInteger('rating')->check('rating between 1 and 5');
             $table->text('comment');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->index();
             $table->foreign('rooster_item_id')->references('id')->on('rooster_items')->cascadeOnDelete();
             $table->timestamps();
         });
