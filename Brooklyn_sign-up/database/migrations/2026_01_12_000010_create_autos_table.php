@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('kenteken')->unique();
             $table->string('merk');
             $table->tinyInteger('type');
-            $table->boolean('beschikbaar');
+            $table->boolean('beschikbaar')->default(true);
             $table->timestamps();
         });
     }
