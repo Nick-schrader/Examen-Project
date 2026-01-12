@@ -34,9 +34,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin views
-Route::get('/admin/agenda', function () {
-    return view('admin-views/agenda');
-})->middleware(['auth', 'verified'])->name('agenda');
+use App\Http\Controllers\AdminAgendaController;
+Route::get('/admin/agenda', [AdminAgendaController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('agenda');
 
 
 require __DIR__.'/auth.php';
