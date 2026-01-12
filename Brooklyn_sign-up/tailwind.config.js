@@ -1,6 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-
+ 
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -8,14 +8,23 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
-
+ 
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                eisgroen: '#6E8B3D',
+                eisblue:'#004A7F' ,
+                eisgeel: '#FFD800 ',
+            },
         },
     },
-
+ 
     plugins: [forms],
 };
+ 
+ 
+ 
+ 
