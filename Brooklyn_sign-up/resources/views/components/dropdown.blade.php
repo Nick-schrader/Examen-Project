@@ -4,6 +4,7 @@
 $alignmentClasses = match ($align) {
     'left' => 'ltr:origin-top-left rtl:origin-top-right start-0',
     'top' => 'origin-top',
+    'center' => 'origin-top left-1/2 -translate-x-1/2',
     default => 'ltr:origin-top-right rtl:origin-top-left end-0',
 };
 
