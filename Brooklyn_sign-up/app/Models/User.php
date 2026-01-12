@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
 
@@ -25,9 +26,15 @@ class User extends Authenticatable
         'auto_preference',
     ];
 
-     protected $hidden = [
-        'password',
+    protected $hidden = [
+        'wachtwoord',
+        'remember_token',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->wachtwoord;
+    }
 
     public function strippenkaarten(): HasMany
     {
