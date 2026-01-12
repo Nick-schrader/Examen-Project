@@ -11,7 +11,7 @@ return new class extends Migration {
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('rooster_item_id');
+            $table->unsignedBigInteger('rooster_item_id')->unique();
             $table->unsignedTinyInteger('rating')->check('rating between 1 and 5');
             $table->text('comment');
             $table->tinyInteger('status')->index();
