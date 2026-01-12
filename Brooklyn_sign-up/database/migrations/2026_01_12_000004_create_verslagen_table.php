@@ -13,7 +13,11 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('rooster_item_id');
             $table->text('verslag');
+            // Domain-level creation date of the verslag (e.g. as entered by the user),
+            // distinct from the Eloquent-managed created_at timestamp.
             $table->date('datum_gemaakt');
+            // Domain-level last modification date of the verslag,
+            // distinct from the Eloquent-managed updated_at timestamp.
             $table->date('datum_aangepast');
             $table->foreign('rooster_item_id')->references('id')->on('rooster_items')->cascadeOnDelete();
             $table->timestamps();
