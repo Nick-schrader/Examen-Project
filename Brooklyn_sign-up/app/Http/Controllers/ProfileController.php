@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\AdresUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public $timestamps = false;
+
     /**
      * Display the user's profile form.
      */
@@ -19,6 +22,18 @@ class ProfileController extends Controller
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
+    }
+
+    public function adresupdate(AdresUpdateRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        // Combine address fields into one string
+        $adres = $data['straat'] . ' -=- ' . $data['huisnummer'] . ' -=- ' . $data['postcode'] . ' -=- ' . $data['woonplaats'];
+        $user = $request->user();
+        $user->adres = $adres;
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
