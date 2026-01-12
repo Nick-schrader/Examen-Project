@@ -17,4 +17,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Admin views
+
+Route::get('/admin/agenda', function () {
+    return view('admin-views/agenda');
+})->middleware(['auth', 'verified'])->name('agenda');
+
+
 require __DIR__.'/auth.php';
