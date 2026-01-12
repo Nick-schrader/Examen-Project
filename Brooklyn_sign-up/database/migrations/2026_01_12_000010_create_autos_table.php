@@ -11,7 +11,7 @@ return new class extends Migration {
     {
         Schema::create('autos', function (Blueprint $table) {
             $table->id();
-            $table->string('kenteken');
+            $table->string('kenteken')->unique();
             $table->string('merk');
             $table->tinyInteger('type');
             $table->boolean('beschikbaar');
