@@ -18,7 +18,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin views
-
 Route::get('/admin/agenda', function () {
     return view('admin-views/agenda');
 })->middleware(['auth', 'verified'])->name('agenda');
