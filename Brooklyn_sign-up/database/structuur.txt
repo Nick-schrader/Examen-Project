@@ -1,0 +1,119 @@
+Database-structuur – Brooklyn Signup (Rijlesbeheer)
+
+USERS
+- id (int, PK)
+- naam (varchar)
+- email (varchar, uniek)
+- password (varchar)
+- telefoon (varchar)
+- type (int)
+  - 0 = gast
+  - 1 = leerling
+  - 2 = instructeur
+  - 3 = admin
+- geboorte_datum (DATE)
+- geslacht (varchar)
+- adres (varchar)
+- auto_preference (int, FK → auto.id, nullable)
+
+Relaties:
+- account ↔ rooster_items (als leerling en/of instructeur)
+- account ↔ strippenkaart
+- account ↔ korting
+
+
+AUTO
+- id (int, PK)
+- kenteken (varchar)
+- merk (varchar)
+- type (tinyint)
+- beschikbaar (boolean)
+
+Relaties:
+- auto ↔ rooster_items
+- auto ↔ auto_gebruik
+- auto ↔ account (auto_preference)
+
+
+ROOSTER_ITEMS
+- id (int, PK)
+- leerling_id (int, FK → account.id)
+- instructeur_id (int, FK → account.id)
+- datum_en_tijd (DATETIME)
+- auto (int, FK → auto.id)
+
+Relaties:
+- rooster_items ↔ account (leerling)
+- rooster_items ↔ account (instructeur)
+- rooster_items ↔ auto
+- rooster_items ↔ verslag (1-op-1)
+- rooster_items ↔ review (1-op-1)
+
+
+VERSLAG
+- id (int, PK)
+- rooster_item_id (int, FK → rooster_items.id)
+- verslag (TEXT)
+- datum_gemaakt (DATE)
+- datum_aangepast (DATE)
+
+Relaties:
+- verslag ↔ rooster_items (1-op-1)
+
+
+REVIEW
+- id (int, PK)
+- rooster_item_id (int, FK → rooster_items.id)
+- rating (int, 1–5)
+- comment (TEXT)
+- status (tinyint)
+  - 0 = pending
+  - 1 = goedgekeurd
+  - 2 = afgekeurd
+
+Relaties:
+- review ↔ rooster_items (1-op-1)
+- review ↔ review_flag (1-op-veel)
+
+
+REVIEW_FLAG
+- id (int, PK)
+- review_id (int, FK → review.id)
+- reason (TEXT)
+
+Relaties:
+- meerdere flags per review
+
+
+STRIPPENKAART
+- id (int, PK)
+- leerling_id (int, FK → account.id)
+- tegoed (int)
+- verval_datum (DATE)
+
+Relaties:
+- strippenkaart ↔ account (leerling)
+- één leerling kan meerdere strippenkaarten hebben
+
+
+KORTING
+- id (int, PK)
+- leerling_id (int, FK → account.id)
+- percentage (int)
+- reason (TEXT)
+- is_used (boolean)
+
+Relaties:
+- korting ↔ account (leerling)
+- één leerling kan meerdere kortingen hebben
+
+
+AUTO_GEBRUIK
+- id (int, PK)
+- auto_id (int, FK → auto.id)
+- start_gebruik (DATETIME)
+- eind_gebruik (DATETIME)
+
+Relaties:
+- auto_gebruik ↔ auto
+- één auto kan meerdere gebruiksperiodes hebben
