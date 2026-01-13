@@ -12,15 +12,28 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public $timestamps = false;
 
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
+        $adresParts = explode(' -=- ', $request->user()->adres ?? '');
+
+        if (is_array($adresParts) && count($adresParts) === 4) {
+            $straat = $adresParts[0];
+            $huisnummer = $adresParts[1];
+            $postcode = $adresParts[2];
+            $woonplaats = $adresParts[3];
+        }
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'adres' => $adresParts,
+            'straat' => $straat ?? null,
+            'huisnummer' => $huisnummer ?? null,
+            'postcode' => $postcode ?? null,
+            'woonplaats' => $woonplaats ?? null,
         ]);
     }
 

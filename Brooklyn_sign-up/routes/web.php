@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoosterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,9 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profiel', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/rooster', function () {
-    return view('rooster');
-})->middleware(['auth', 'verified'])->name('rooster');
+// leerling rooster views
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
+});
 
 // Admin views
 
