@@ -9,6 +9,8 @@ class RoosterItem extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $table = 'rooster_items';
 
     protected $fillable = [
