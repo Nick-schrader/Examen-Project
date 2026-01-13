@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\User;
 
-class AgendaController extends Controller
+class AdminAgendaController extends Controller
 {
     /**
-     * Show the agenda view for a given week.
+     * Show the admin agenda view for a given week and instructor.
      */
     public function index(Request $request)
     {
@@ -26,12 +27,15 @@ class AgendaController extends Controller
         $prev = $startOfWeek->copy()->subWeek();
         $next = $startOfWeek->copy()->addWeek();
 
+        $instructors = User::where('type', 2)->get();
+
         return view('admin-views.agenda', [
             'days' => $days,
             'timeBlocks' => $timeBlocks,
             'startOfWeek' => $startOfWeek,
             'prev' => $prev,
             'next' => $next,
+            'instructors' => $instructors,
         ]);
     }
 }

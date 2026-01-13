@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoosterController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AdminAgendaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,6 +13,22 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/review', function () {
+    return view('review');
+})->middleware(['auth', 'verified'])->name('review');
+
+Route::get('/overOns', function () {
+    return view('overOns');
+})->middleware(['auth', 'verified'])->name('overOns');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->middleware(['auth', 'verified'])->name('contact');
+
+Route::get('/agenda', function () {
+    return view('agenda');
+})->middleware(['auth', 'verified'])->name('agenda');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -24,12 +42,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
 });
-
-// Admin views
-
-Route::get('/admin/agenda', function () {
-    return view('admin-views/agenda');
-})->middleware(['auth', 'verified'])->name('agenda');
-
 
 require __DIR__.'/auth.php';
