@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
             'naam' => $request->naam,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'type' => $request->type
+            'type' => 1  // Always assign student role for self-registration
         ]);
 
         event(new Registered($user));
