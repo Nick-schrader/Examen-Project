@@ -8,9 +8,12 @@ use App\Models\Auto;
 
 class AutoController extends Controller
 {
+
+    public $carImagesFilePath = 'assets/cars';
+    
     public function index()
     {
-        $autos = Auto::all(); // Changed to use Eloquent model
+        $autos = Auto::all();
         return view('wagenpark', compact('autos'));
     }
 
@@ -47,7 +50,7 @@ class AutoController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/cars'), $filename);
+            $file->move(public_path($this->carImagesFilePath), $filename);
             $validated['foto'] = $filename;
         } else {
             // Default image if none provided

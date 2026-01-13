@@ -318,10 +318,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 export function closeImageUploaderModal() {
     document.getElementById('imageUploaderModal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'hidden';
+}
+
+export function openImageUploaderModal() {
+    document.getElementById('imageUploaderModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+export function removeCar() {
+    console.log("CAR WILL BE REMOVED");
 }
 
 // Make functions globally available
+window.removeCar = removeCar;
+window.openImageUploaderModal = openImageUploaderModal;
 window.closeImageUploaderModal = closeImageUploaderModal;
 window.openModal = openModal;
 window.closeModal = closeModal;

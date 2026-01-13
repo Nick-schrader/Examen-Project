@@ -122,6 +122,10 @@
                         
                         <div class="space-y-4">
                             <div>
+                                <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
+                                <input type="button" id="foto" name="foto" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="openImageUploaderModal()">
+                            </div>
+                            <div>
                                 <label for="merk" class="block text-sm font-medium text-gray-700 mb-1">Merk</label>
                                 <input type="text" id="merk" name="merk" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
@@ -147,6 +151,12 @@
                                     <option value="3">Onderhoud</option>
                                     <option value="4">Defect</option>
                                 </select>
+                            </div>
+
+                            <div>
+                                <button class="flex-1 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors" onclick="removeCar()">
+                                    VERWIJDER AUTO
+                                </button>
                             </div>
 
                             <div class="flex gap-3 pt-4">
@@ -242,7 +252,7 @@
 
                         <div>
                             <label for="add_foto" class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
-                            <input type="file" id="add_foto" name="foto" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="button" id="add_foto" name="add_foto" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="openImageUploaderModal()">
                             <p class="text-sm text-gray-500 mt-1">Optioneel - upload een foto van de auto</p>
                         </div>
 
@@ -271,8 +281,11 @@
                 <h2 class="text-2xl font-bold">Foto's</h2>
                 <button onclick="closeImageUploaderModal()" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
             </div>
-            <div class="p-6">
-                
+            <div>
+                <!-- TODO:
+                - Display all car images (under folder /assets/cars)
+                - Add a button to upload another image (to /cars) -->
+                <button id="addImage">+</button>
             </div>
         </div>
     </div>
@@ -297,3 +310,7 @@
         });
     </script>
 </x-app-layout>
+
+
+<!-- TODO:
+- Maak de width van het totaaloverzicht gelijk aan het einde van de nieuwe auto button toevoegen -->
