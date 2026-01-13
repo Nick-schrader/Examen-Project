@@ -18,8 +18,10 @@ class ProfileUpdateRequest extends FormRequest
             // to normalize the phone number before validation and storage
             $cleaned = preg_replace('/[\s\-\(\)\+]/', '', $this->telefoon);
             
-            // Normalize international format: convert 00XX prefix to XX (e.g., 0031 -> 31)
-            if (str_starts_with($cleaned, '00')) {
+            // Normalize international format: convert 00 prefix to empty (e.g., 0031 -> 31)
+            // The 00 prefix is the international dialing prefix and should be removed
+            // A valid domestic number starting with 0 (like 0612345678) will only have one 0
+            if (preg_match('/^00\d/', $cleaned)) {
                 $cleaned = substr($cleaned, 2); // Remove leading '00'
             }
             
