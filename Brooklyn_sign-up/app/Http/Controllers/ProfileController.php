@@ -18,6 +18,9 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        if ($request->user()->type !== 1) {
+            abort(403);
+        }
         $adresParts = explode(' -=- ', $request->user()->adres ?? '');
 
         if (is_array($adresParts) && count($adresParts) === 4) {

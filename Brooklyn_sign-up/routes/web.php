@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
+    Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
 });
 
 require __DIR__.'/auth.php';

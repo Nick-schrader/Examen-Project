@@ -8,11 +8,16 @@ use App\Models\User;
 
 class AdminAgendaController extends Controller
 {
+
     /**
      * Show the admin agenda view for a given week and instructor.
      */
     public function index(Request $request)
     {
+        if ($request->user()->type !== 2 && $request->user()->type !== 3) {
+            abort(403);
+        }
+
         $currentWeek = $request->query('week', Carbon::now()->isoWeek());
         $currentYear = $request->query('year', Carbon::now()->year);
         $startOfWeek = Carbon::now()->setISODate($currentYear, $currentWeek)->startOfWeek(Carbon::MONDAY);
