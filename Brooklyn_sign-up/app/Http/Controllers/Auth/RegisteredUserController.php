@@ -39,7 +39,8 @@ class RegisteredUserController extends Controller
             'naam' => $request->naam,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'type' => $request->type
+            // Always assign the default (non-privileged) role on self-registration.
+            'type' => 1,
         ]);
 
         event(new Registered($user));
