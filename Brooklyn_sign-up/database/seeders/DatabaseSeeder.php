@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             [
                 'naam' => 'Admin',
                 'email' => 'admin@brooklyn.nl',
-                'wachtwoord' => Hash::make('admin123'),
+                'password' => Hash::make('admin123'),
                 'telefoon' => '0612345678',
                 'type' => 3,
                 'geboorte_datum' => '1990-01-01',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             [
                 'naam' => 'Leerling',
                 'email' => 'leerling@brooklyn.nl',
-                'wachtwoord' => Hash::make('leerling123'),
+                'password' => Hash::make('leerling123'),
                 'telefoon' => '0612345679',
                 'type' => 1,
                 'geboorte_datum' => '2005-05-05',
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
             [
                 'naam' => 'Instructeur',
                 'email' => 'instructeur@brooklyn.nl',
-                'wachtwoord' => Hash::make('instructeur123'),
+                'password' => Hash::make('instructeur123'),
                 'telefoon' => '0612345680',
                 'type' => 2,
                 'geboorte_datum' => '1980-10-10',
