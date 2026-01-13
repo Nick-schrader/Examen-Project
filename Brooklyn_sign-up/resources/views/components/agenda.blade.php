@@ -1,4 +1,5 @@
 <!-- Agenda Table -->
+<div class="flex justify-center w-full mt-6">
 <div class="w-full max-w-6xl bg-eisgeel rounded-2xl overflow-hidden shadow-2xl">
     <div class="flex">
         <!-- Main Content and Right Bar Wrapper -->
@@ -54,3 +55,4 @@
                             </div>
                         </div>
                         </div>
+                    </div>
