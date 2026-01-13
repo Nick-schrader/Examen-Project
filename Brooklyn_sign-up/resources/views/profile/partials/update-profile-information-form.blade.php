@@ -1,9 +1,6 @@
-<?php
-
-echo "<script>console.log(" . json_encode($user) . ")</script>";
-
-?>
-
+<script>
+    console.log(@json($user));
+</script>
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
