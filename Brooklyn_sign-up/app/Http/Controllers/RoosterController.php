@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 class RoosterController extends Controller
 {
-    private function getRooster($userId): Object|Array {
+    private function getRooster($userId): object|array {
         return DB::table('rooster_items')
                     ->where('leerling_id', $userId)
                     ->get();
