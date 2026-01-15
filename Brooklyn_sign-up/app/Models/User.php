@@ -38,6 +38,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function strippenkaart()
+    {
+        return $this->hasOne(Strippenkaart::class, 'leerling_id', 'id');
+    }
+
+
     /**
      * Get the attributes that should be cast.
      *

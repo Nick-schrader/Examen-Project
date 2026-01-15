@@ -5,6 +5,7 @@ use App\Http\Controllers\RoosterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AdminAgendaController;
+use App\Http\Controllers\StrippenkaartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,5 +44,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
     Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
 });
+
+Route::post('/strippenkaart/add', [StrippenkaartController::class, 'add'])->name('strippenkaart.add');
+
 
 require __DIR__.'/auth.php';
