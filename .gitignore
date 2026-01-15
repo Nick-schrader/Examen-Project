@@ -6,6 +6,7 @@ node_modules/
 .env
 .env.*
 .phpunit.result.cache
+.vite.config.js
 storage/*.key
 storage/app/public
 storage/framework/cache/*
