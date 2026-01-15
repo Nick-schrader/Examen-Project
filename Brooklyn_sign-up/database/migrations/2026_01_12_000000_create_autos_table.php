@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('autos', function (Blueprint $table) {
+        Schema::create('auto', function (Blueprint $table) {
             $table->id();
             $table->string('kenteken');
             $table->string('merk');
             $table->tinyInteger('type');
             $table->boolean('beschikbaar');
+            $table->string('foto');
             $table->timestamps();
         });
     }

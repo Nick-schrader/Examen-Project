@@ -31,7 +31,7 @@ class Auto extends Model
         return $this->hasMany(AutoGebruik::class, 'auto_id');
     }
 
-    public function accounts()
+    public function users()
     {
         return $this->hasMany(User::class, 'auto_preference');
     }

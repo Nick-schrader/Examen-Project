@@ -40,9 +40,18 @@ Route::get('/wagenpark', [AutoController::class, 'index'])->middleware(['auth', 
 Route::put('/autos/{id}', [AutoController::class, 'update'])->name('autos.update');
 Route::post('/autos', [AutoController::class    , 'store'])->name('autos.store');
 Route::delete('/autos/remove/{id}', [AutoController::class, 'remove'])->name('autos.remove');
+// Get overview graph data (all cars)
+Route::get('/autos/usage-data', [AutoController::class, 'getCarUsageData'])
+    ->name('autos.usage-data');
+
+// Get specific car graph data
+Route::get('/autos/{id}/usage-data', [AutoController::class, 'getCarUsageData'])
+    ->name('autos.usage-data.single');
 
 // Image uploader
 Route::get('/autos/images', [AutoController::class, 'getCarImages'])->name('autos.images');
 Route::post('/autos/upload-image', [AutoController::class, 'uploadCarImage'])->name('autos.upload-image');
 
+// DEBUG
+Route::get('/autos/debug-usage', [AutoController::class, 'debugUsageData']);
 require __DIR__.'/auth.php';

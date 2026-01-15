@@ -76,11 +76,8 @@ function displayImages() {
                  alt="${image}" 
                  class="w-full h-32 object-cover"
                  onerror="console.error('Failed to load image:', '${imageBaseUrl}/${image}'); this.style.backgroundColor='#f3f4f6'; this.alt='Afbeelding niet gevonden';">
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+            <div class="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
                 <span class="text-white opacity-0 group-hover:opacity-100 font-semibold">Selecteer</span>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-                <p class="text-white text-xs truncate">${image}</p>
             </div>
         </div>
     `).join('');
@@ -104,6 +101,10 @@ function selectImage(imageName) {
     
     // Update the button text to show selected image
     const buttonId = selectedImageField === 'foto' ? 'fotoButton' : 'add_fotoButton';
+    console.log("Button id: " + buttonId);
+    console.log("Selected Image Field: " + selectedImageField);
+    console.log("Image name: " + imageName);
+
     updateImageButtonText(buttonId, imageName);
     
     closeImageUploaderModal();

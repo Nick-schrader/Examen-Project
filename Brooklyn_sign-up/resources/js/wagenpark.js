@@ -8,8 +8,14 @@ let currentCarPeriod = 'week';
 // Track main overview period
 let currentOverviewPeriod = 'week';
 
+// Chart instances
+let overviewChart = null;
+let carChart = null;
+
 export function initializeWagenpark(autosData) {
     autos = autosData;
+    // Load initial overview graph
+    loadOverviewGraphData('week');
 }
 
 export function openModal(id) {
@@ -25,11 +31,10 @@ export function openModal(id) {
     document.getElementById('type').value = auto.type;
     document.getElementById('beschikbaar').value = auto.beschikbaar;
     
-    // Populate foto field - IMPORTANT FIX
+    // Populate foto field
     const fotoInput = document.getElementById('foto');
     if (fotoInput) {
         fotoInput.value = auto.foto || '';
-        // Update the button text to show current image
         if (window.updateImageButtonText) {
             window.updateImageButtonText('fotoButton', auto.foto || '');
         }
@@ -55,7 +60,7 @@ export function openModal(id) {
         errorDiv.classList.add('hidden');
     }
 
-    // Reset to bewerk tab (now first)
+    // Reset to bewerk tab
     switchTab('bewerk');
 
     // Show modal
@@ -72,30 +77,25 @@ export function closeModal() {
 }
 
 export function switchTab(tab) {
-    // Update tab buttons
     const inzichtTab = document.getElementById('tab-inzicht');
     const bewerkTab = document.getElementById('tab-bewerk');
     const inzichtContent = document.getElementById('content-inzicht');
     const bewerkContent = document.getElementById('content-bewerk');
 
     if (tab === 'bewerk') {
-        // Activate bewerk tab
         bewerkTab.classList.add('border-eisgroen', 'text-eisgroen');
         bewerkTab.classList.remove('border-transparent', 'text-gray-500');
         inzichtTab.classList.remove('border-eisgroen', 'text-eisgroen');
         inzichtTab.classList.add('border-transparent', 'text-gray-500');
         
-        // Show bewerk content
         bewerkContent.classList.remove('hidden');
         inzichtContent.classList.add('hidden');
     } else {
-        // Activate inzicht tab
         inzichtTab.classList.add('border-eisgroen', 'text-eisgroen');
         inzichtTab.classList.remove('border-transparent', 'text-gray-500');
         bewerkTab.classList.remove('border-eisgroen', 'text-eisgroen');
         bewerkTab.classList.add('border-transparent', 'text-gray-500');
         
-        // Show inzicht content
         inzichtContent.classList.remove('hidden');
         bewerkContent.classList.add('hidden');
     }
@@ -104,7 +104,6 @@ export function switchTab(tab) {
 export function switchCarPeriod(period) {
     currentCarPeriod = period;
     
-    // Update button states
     const buttons = ['car-btn-week', 'car-btn-month', 'car-btn-year'];
     buttons.forEach(btnId => {
         const btn = document.getElementById(btnId);
@@ -117,7 +116,6 @@ export function switchCarPeriod(period) {
         }
     });
 
-    // Reload graph data for current car
     if (currentCarId) {
         loadCarGraphData(currentCarId, period);
     }
@@ -126,7 +124,6 @@ export function switchCarPeriod(period) {
 export function switchPeriod(period) {
     currentOverviewPeriod = period;
     
-    // Update button states
     const buttons = ['btn-week', 'btn-month', 'btn-year'];
     buttons.forEach(btnId => {
         const btn = document.getElementById(btnId);
@@ -139,18 +136,151 @@ export function switchPeriod(period) {
         }
     });
 
-    // Load graph data for overview
     loadOverviewGraphData(period);
 }
 
-function loadCarGraphData(carId, period) {
-    // This function will load graph data for a specific car
-    console.log(`Loading graph data for car ${carId} with period ${period}`);
+async function loadCarGraphData(carId, period) {
+    try {
+        const response = await fetch(`/autos/${carId}/usage-data?period=${period}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            renderCarChart(result.data);
+        } else {
+            console.error('Failed to load car usage data');
+        }
+    } catch (error) {
+        console.error('Error loading car graph data:', error);
+    }
 }
 
-function loadOverviewGraphData(period) {
-    // This function will load graph data for all cars overview
-    console.log(`Loading overview graph data with period ${period}`);
+async function loadOverviewGraphData(period) {
+    try {
+        const response = await fetch(`/autos/usage-data?period=${period}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            renderOverviewChart(result.data);
+        } else {
+            console.error('Failed to load overview data');
+        }
+    } catch (error) {
+        console.error('Error loading overview graph data:', error);
+    }
+}
+
+function renderOverviewChart(data) {
+    const container = document.querySelector('.h-80.flex.items-center');
+    
+    // Replace placeholder with canvas
+    if (container) {
+        container.innerHTML = '<canvas id="overviewChart"></canvas>';
+        container.classList.remove('border-dashed', 'border-gray-300');
+        container.classList.add('p-4');
+    }
+    
+    const ctx = document.getElementById('overviewChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (overviewChart) {
+        overviewChart.destroy();
+    }
+    
+    // Create new chart
+    overviewChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' uur';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Gebruikstijd (uren)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Datum'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderCarChart(data) {
+    const container = document.querySelector('#content-inzicht .h-64');
+    
+    // Replace placeholder with canvas
+    if (container) {
+        container.innerHTML = '<canvas id="carChart"></canvas>';
+        container.classList.remove('border-dashed', 'border-gray-300');
+        container.classList.add('p-2');
+    }
+    
+    const ctx = document.getElementById('carChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (carChart) {
+        carChart.destroy();
+    }
+    
+    // Create new chart
+    carChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Gebruikstijd: ' + context.parsed.y.toFixed(2) + ' uur';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Uren'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Datum'
+                    }
+                }
+            }
+        }
+    });
 }
 
 export async function submitForm(event) {
@@ -159,12 +289,10 @@ export async function submitForm(event) {
     const carId = document.getElementById('carId').value;
     const errorDiv = document.getElementById('errorMessage');
     
-    // Hide error message
     if (errorDiv) {
         errorDiv.classList.add('hidden');
     }
     
-    // Create FormData and explicitly add all fields including foto
     const formData = new FormData();
     formData.append('_token', document.querySelector('input[name="_token"]').value);
     formData.append('_method', 'PUT');
@@ -172,7 +300,7 @@ export async function submitForm(event) {
     formData.append('kenteken', document.getElementById('kenteken').value);
     formData.append('type', document.getElementById('type').value);
     formData.append('beschikbaar', document.getElementById('beschikbaar').value);
-    formData.append('foto', document.getElementById('foto').value); // IMPORTANT: Include foto
+    formData.append('foto', document.getElementById('foto').value);
     
     try {
         const response = await fetch(`/autos/${carId}`, {
@@ -185,28 +313,20 @@ export async function submitForm(event) {
         });
 
         const data = await response.json();
-        console.log('Response:', data);
 
         if (response.ok) {
-            // Update the auto in the autos array
             const autoIndex = autos.findIndex(a => a.id == carId);
             if (autoIndex !== -1) {
                 autos[autoIndex] = { ...autos[autoIndex], ...data.auto };
             }
-            
-            // Reload the page to show updated data
             location.reload();
         } else {
-            console.error('Error response:', data);
-            // Show error message
             if (errorDiv) {
                 errorDiv.textContent = data.message || 'Er is een fout opgetreden bij het opslaan.';
                 errorDiv.classList.remove('hidden');
             }
         }
     } catch (error) {
-        console.error('Error:', error);
-        // Show error message
         if (errorDiv) {
             errorDiv.textContent = 'Er is een fout opgetreden bij het opslaan: ' + error.message;
             errorDiv.classList.remove('hidden');
@@ -215,19 +335,16 @@ export async function submitForm(event) {
 }
 
 export function openAddCarModal() {
-    // Clear form fields
     document.getElementById('add_merk').value = '';
     document.getElementById('add_kenteken').value = '';
     document.getElementById('add_type').value = '1';
     document.getElementById('add_beschikbaar').value = '1';
     document.getElementById('add_foto').value = '';
     
-    // Reset the button text
     if (window.updateImageButtonText) {
         window.updateImageButtonText('add_fotoButton', '');
     }
 
-    // Clear any previous error messages
     const errorDiv = document.getElementById('addErrorMessage');
     if (errorDiv) {
         errorDiv.classList.add('hidden');
@@ -247,19 +364,17 @@ export async function submitAddCarForm(event) {
     
     const errorDiv = document.getElementById('addErrorMessage');
     
-    // Hide error message
     if (errorDiv) {
         errorDiv.classList.add('hidden');
     }
     
-    // Create FormData and explicitly add all fields including foto
     const formData = new FormData();
     formData.append('_token', document.querySelector('input[name="_token"]').value);
     formData.append('merk', document.getElementById('add_merk').value);
     formData.append('kenteken', document.getElementById('add_kenteken').value);
     formData.append('type', document.getElementById('add_type').value);
     formData.append('beschikbaar', document.getElementById('add_beschikbaar').value);
-    formData.append('foto', document.getElementById('add_foto').value); // IMPORTANT: Include foto
+    formData.append('foto', document.getElementById('add_foto').value);
     
     try {
         const response = await fetch('/autos', {
@@ -272,22 +387,16 @@ export async function submitAddCarForm(event) {
         });
 
         const data = await response.json();
-        console.log('Response:', data);
 
         if (response.ok) {
-            // Reload the page to show the new car
             location.reload();
         } else {
-            console.error('Error response:', data);
-            // Show error message
             if (errorDiv) {
                 errorDiv.textContent = data.message || 'Er is een fout opgetreden bij het toevoegen.';
                 errorDiv.classList.remove('hidden');
             }
         }
     } catch (error) {
-        console.error('Error:', error);
-        // Show error message
         if (errorDiv) {
             errorDiv.textContent = 'Er is een fout opgetreden bij het toevoegen: ' + error.message;
             errorDiv.classList.remove('hidden');
@@ -295,49 +404,52 @@ export async function submitAddCarForm(event) {
     }
 }
 
-export function removeCar() {
-    // Get car id
+export async function removeCar() {
     const id = document.getElementById('carId').value;
 
-    // Check if car exists
     if (!id) {
         console.log("NO CAR FOUND");
         return;
     }
-    console.log("CAR WILL BE REMOVED:", id);
 
-    // Get crsf token
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    if (!confirm('Weet je zeker dat je deze auto wilt verwijderen?')) {
+        return;
+    }
 
-    // Call remove url
-    fetch(`/autos/remove/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': token,
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Delete failed');
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success:', data);
-        alert(data.message);
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+                  || document.querySelector('input[name="_token"]')?.value;
+
+    if (!token) {
+        alert('CSRF token niet gevonden');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/autos/remove/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
         
-        // Example: remove car row from page
-        document.getElementById(`car-${id}`)?.remove();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Er ging iets mis bij het verwijderen.');
-    });
+        if (response.ok && data.success) {
+            alert(data.message || 'Auto succesvol verwijderd');
+            closeModal();
+            location.reload();
+        } else {
+            alert(data.message || 'Er ging iets mis bij het verwijderen.');
+        }
+    } catch (error) {
+        alert('Er ging iets mis bij het verwijderen: ' + error.message);
+    }
 }
 
-
-// Initialize event listeners when DOM is ready
+// Initialize event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    // Close modals when clicking outside
     const modal = document.getElementById('carModal');
     if (modal) {
         modal.addEventListener('click', function(e) {
@@ -346,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
     const addModal = document.getElementById('addCarModal');
     if (addModal) {
         addModal.addEventListener('click', function(e) {
@@ -359,12 +472,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (imageUploaderModal) {
         imageUploaderModal.addEventListener('click', function(e) {
             if (e.target === this) {
-                closeImageUploaderModal();
+                if (window.closeImageUploaderModal) {
+                    window.closeImageUploaderModal();
+                }
             }
         });
     }
 
-    // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             const carModal = document.getElementById('carModal');

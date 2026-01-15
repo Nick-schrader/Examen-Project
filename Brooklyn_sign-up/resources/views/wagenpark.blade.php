@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <x-app-layout>
     <div class="bg-eisgeel m-4 rounded-lg shadow-lg flex flex-col items-center py-10 space-y-6">
         <h1 class="text-3xl font-bold mb-6">Autos</h1>
@@ -54,7 +56,7 @@
         </div>
         <!-- Add New Car Button - Desktop (aligned to right) -->
         <div class="flex justify-end px-4 mt-2">
-            <button onclick="openAddCarModal()" class="bg-eisgroen hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
+            <button onclick="openAddCarModal()" class="bg-eisgroen hover:bg-eisgroen/80 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
                 + Nieuwe Auto Toevoegen
             </button>
         </div>
@@ -62,7 +64,7 @@
 
     <!-- Add New Car Button - Mobile (centered) -->
     <div class="block md:hidden w-full px-4 mt-2">
-        <button onclick="openAddCarModal()" class="w-full bg-eisgroen hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
+        <button onclick="openAddCarModal()" class="w-full bg-eisgroen hover:bg-eisgroen/80 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
             + Nieuwe Auto Toevoegen
         </button>
     </div>
@@ -72,8 +74,8 @@
         <!-- Graph Section -->
         <div class="w-full max-w-7xl bg-white rounded-lg shadow-lg p-6">
             <!-- Time Period Selector -->
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-semibold">Auto Gebruik</h2>
+            <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6">
+                <h2 class="text-2xl font-semibold mb-2 sm:mb-0">Gebruik auto's</h2>
                 <div class="flex gap-2">
                     <button onclick="switchPeriod('week')" id="btn-week" class="px-4 py-2 rounded-md bg-eisgroen text-white font-medium transition-colors">
                         Week
@@ -86,6 +88,7 @@
                     </button>
                 </div>
             </div>
+
             
             <!-- Graph Container -->
             <div class="h-80 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
@@ -147,7 +150,7 @@
                             </div>
 
                             <div>
-                                <label for="beschikbaar" class="block text-sm font-medium text-gray-700 mb-1">Beschikbaarheid</label>
+                                <label for="beschikbaar" class="block text-sm font-medium text-gray-700 mb-1">Beschikbaarheid (doesnt work yet)</label>
                                 <select id="beschikbaar" name="beschikbaar" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="1">Beschikbaar</option>
                                     <option value="2">Bezet</option>
@@ -163,7 +166,7 @@
                             </div>
 
                             <div class="flex gap-3 pt-4">
-                                <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                                <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-eisgroen/80 transition-colors">
                                     Opslaan
                                 </button>
                                 <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
@@ -188,8 +191,8 @@
                     <!-- Graph Section for Individual Car -->
                     <div class="w-full bg-white rounded-lg border border-gray-200 p-4">
                         <!-- Time Period Selector -->
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold">Auto Gebruik</h3>
+                        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-4">
+                            <h3 class="text-lg font-semibold mb-2 sm:mb-0">Auto Gebruik</h3>
                             <div class="flex gap-2">
                                 <button onclick="switchCarPeriod('week')" id="car-btn-week" class="px-3 py-1.5 text-sm rounded-md bg-eisgroen text-white font-medium transition-colors">
                                     Week
@@ -202,7 +205,6 @@
                                 </button>
                             </div>
                         </div>
-                        
                         <!-- Graph Container -->
                         <div class="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
                             <p class="text-gray-400">Geen data beschikbaar</p>
@@ -244,7 +246,7 @@
                         </div>
 
                         <div>
-                            <label for="add_beschikbaar" class="block text-sm font-medium text-gray-700 mb-1">Beschikbaarheid</label>
+                            <label for="add_beschikbaar" class="block text-sm font-medium text-gray-700 mb-1">Beschikbaarheid (doesnt work yet)</label>
                             <select id="add_beschikbaar" name="beschikbaar" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="1">Beschikbaar</option>
                                 <option value="2">Bezet</option>
@@ -255,12 +257,15 @@
 
                         <div>
                             <label for="add_foto" class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
-                            <input type="button" id="add_foto" name="add_foto" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="openImageUploaderModal()">
+                            <input type="hidden" id="add_foto" name="foto">
+                            <button type="button" id="add_fotoButton" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left text-gray-500 bg-white hover:bg-gray-50 transition-colors">
+                                Selecteer een foto
+                            </button>
                             <p class="text-sm text-gray-500 mt-1">Optioneel - upload een foto van de auto</p>
                         </div>
 
                         <div class="flex gap-3 pt-4">
-                            <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                            <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-eisgroen/80 transition-colors">
                                 Toevoegen
                             </button>
                             <button type="button" onclick="closeAddCarModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
@@ -289,11 +294,11 @@
                 <!-- Upload Section -->
                 <div class="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                     <div class="flex flex-col items-center">
-                        <label for="imageUploadInput" id="uploadImageBtn" class="cursor-pointer bg-eisgroen text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-md inline-block">
+                        <label for="imageUploadInput" id="uploadImageBtn" class="cursor-pointer bg-eisgroen text-white px-6 py-3 rounded-lg hover:bg-eisgroen/80 transition-colors font-semibold shadow-md inline-block">
                             + Nieuwe Foto Uploaden
                         </label>
                         <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-                        <p class="text-sm text-gray-500 mt-2">JPG, PNG, GIF (max 2MB)</p>
+                        <p class="text-sm text-gray-500 mt-2">JPG, JPEG, PNG (max 2MB)</p>
                     </div>
                     
                     <!-- Upload Message -->

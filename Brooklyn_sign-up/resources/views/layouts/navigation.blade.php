@@ -27,6 +27,11 @@
                     <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
                         {{ __('Agenda') }}
                     </x-nav-link>
+                    @if(Auth::user()->isEigenaar())
+                    <x-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                        {{ __('Wagenpark') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -100,6 +105,11 @@
             <x-responsive-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
                 {{ __('Agenda') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->isEigenaar())
+            <x-responsive-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                {{ __('Wagenpark') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
