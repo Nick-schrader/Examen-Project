@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AdminAgendaController;
+use App\Http\Controllers\StrippenkaartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,5 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/strippenkaart/add', [StrippenkaartController::class, 'add'])->name('strippenkaart.add');
+
 
 require __DIR__.'/auth.php';
