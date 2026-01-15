@@ -1,12 +1,20 @@
-<x-app-layout>
-    <div>
-          <a href="/rooster{{ $history ? '' : '/history' }}"
-              class="fixed z-50 px-6 py-2 font-semibold text-white transition-all duration-200 bg-eisblue rounded-full shadow-xl bottom-4 right-4 md:top-20 md:bottom-auto md:right-10 hover:bg-eisgroen focus:outline-none focus:ring-2 focus:ring-eisblue focus:ring-opacity-50"
-              style="font-family: 'Inter', 'Segoe UI', Arial, sans-serif;">
-            <span class="tracking-wide">
-                {{ $history ? 'Toon huidig rooster' : 'Toon geschiedenis' }}
-            </span>
-        </a>
+<x-app-layout x-data="{ showPopUp: false }">
+    <div class="fixed z-[40] flex gap-6 font-semibold text-white right-4 bottom-4 md:top-20 md:bottom-auto md:right-10">
+        <x-rooster.button href="/rooster{{ $history ? '' : '/history' }}">
+            {{ $history ? 'Toon huidig rooster' : 'Toon geschiedenis' }}
+        </x-rooster.button>
+        <x-rooster.button href="#" @click.prevent="showPopUp = true" >
+            Les inplannen
+        </x-rooster.button>
     </div>
-    <x-rooster.week :rooster="$rooster" />
+
+    <x-rooster.week :rooster="$rooster"/>
+
+    <div style="display: none" x-show="showPopUp" @close="showPopUp = false">
+        <x-rooster.edit :add="true" />
+    </div>
 </x-app-layout>
+
+<script>
+
+</script>

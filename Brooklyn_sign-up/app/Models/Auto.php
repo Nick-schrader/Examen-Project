@@ -9,13 +9,15 @@ class Auto extends Model
 {
     use HasFactory;
 
-    protected $table = 'autos';
+    protected $table = 'auto';
 
     protected $fillable = [
         'kenteken',
         'merk',
         'type',
         'beschikbaar',
+        'created_at',
+        'updated_at',
     ];
 
     public function roosterItems()
