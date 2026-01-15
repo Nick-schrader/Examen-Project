@@ -1,4 +1,4 @@
-<!-- Agenda Table -->
+{{-- Component agenda.blade.php --}}
 <div class="flex justify-center w-full mt-6">
 <div class="w-full max-w-6xl bg-eisgeel rounded-2xl overflow-hidden shadow-2xl">
     <div class="flex">
@@ -52,6 +52,7 @@
                             <div class="bg-white rounded-lg shadow-lg p-6 min-w-[300px] relative">
                                 <button id="agenda-modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
                                 <!-- Modal content will go here -->
+                                <x-leerlingDataOphalen />
                             </div>
                         </div>
                         </div>
