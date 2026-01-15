@@ -24,21 +24,27 @@
                     <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                         Contact
                     </x-nav-link>
-                    @if(Auth::user()->type === 2 || Auth::user()->type === 3)
-                        <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
-                            Agenda
-                        </x-nav-link>
-                    @elseif(Auth::user()->type === 1)
-                        <x-nav-link :href="route('rooster.get')" :active="request()->routeIs('rooster.get')">
-                            Rooster
-                        </x-nav-link>
-                    @endif
+                    @auth
+                        @if(Auth::user()->type === 2 || Auth::user()->type === 3)
+                            <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
+                                Agenda
+                            </x-nav-link>
+                        @elseif(Auth::user()->type === 1)
+                            <x-nav-link :href="route('rooster.get')" :active="request()->routeIs('rooster.get')">
+                                Rooster
+                            </x-nav-link>
+                        @elseif(Auth::user()->type === 0)
+                            <x-nav-link :href="route('wordLeerling')" :active="request()->routeIs('wordLeerling')">
+                                Word leerling
+                            </x-nav-link>
+                        @endif
+                    @endauth
 
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden z-[999] sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="center" width="48">
                     <x-slot name="trigger">
                         <button
