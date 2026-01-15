@@ -49,7 +49,7 @@ class ProfileController extends Controller
         $user->adres = $adres;
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('status', 'adres-updated');
     }
 
     /**
