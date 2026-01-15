@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\StrippenkaartController;
+use App\Http\Controllers\ReviewController;
+
+Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 
 Route::get('/', function () {
     return view('welcome');
