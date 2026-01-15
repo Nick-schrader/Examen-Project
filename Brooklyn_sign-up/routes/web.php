@@ -38,6 +38,11 @@ Route::middleware('auth')->group(function () {
 // Wagenpark views
 Route::get('/wagenpark', [AutoController::class, 'index'])->middleware(['auth', 'verified'])->name('wagenpark');
 Route::put('/autos/{id}', [AutoController::class, 'update'])->name('autos.update');
-Route::post('/autos', [AutoController::class, 'store'])->name('autos.store');
+Route::post('/autos', [AutoController::class    , 'store'])->name('autos.store');
+Route::delete('/autos/remove/{id}', [AutoController::class, 'remove'])->name('autos.remove');
+
+// Image uploader
+Route::get('/autos/images', [AutoController::class, 'getCarImages'])->name('autos.images');
+Route::post('/autos/upload-image', [AutoController::class, 'uploadCarImage'])->name('autos.upload-image');
 
 require __DIR__.'/auth.php';

@@ -54,7 +54,7 @@
         </div>
         <!-- Add New Car Button - Desktop (aligned to right) -->
         <div class="flex justify-end px-4 mt-2">
-            <button onclick="openAddCarModal()" class="bg-eisblue text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
+            <button onclick="openAddCarModal()" class="bg-eisgroen hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
                 + Nieuwe Auto Toevoegen
             </button>
         </div>
@@ -62,7 +62,7 @@
 
     <!-- Add New Car Button - Mobile (centered) -->
     <div class="block md:hidden w-full px-4 mt-2">
-        <button onclick="openAddCarModal()" class="w-full bg-eisblue text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
+        <button onclick="openAddCarModal()" class="w-full bg-eisgroen hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md">
             + Nieuwe Auto Toevoegen
         </button>
     </div>
@@ -75,7 +75,7 @@
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-semibold">Auto Gebruik</h2>
                 <div class="flex gap-2">
-                    <button onclick="switchPeriod('week')" id="btn-week" class="px-4 py-2 rounded-md bg-eisblue text-white font-medium transition-colors">
+                    <button onclick="switchPeriod('week')" id="btn-week" class="px-4 py-2 rounded-md bg-eisgroen text-white font-medium transition-colors">
                         Week
                     </button>
                     <button onclick="switchPeriod('month')" id="btn-month" class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
@@ -104,7 +104,7 @@
             
             <!-- Tab Navigation -->
             <div class="flex border-b bg-gray-50">
-                <button onclick="switchTab('bewerk')" id="tab-bewerk" class="flex-1 px-6 py-3 text-center font-medium border-b-2 border-eisblue text-eisblue transition-colors">
+                <button onclick="switchTab('bewerk')" id="tab-bewerk" class="flex-1 px-6 py-3 text-center font-medium border-b-2 border-eisgroen text-eisgroen transition-colors">
                     Bewerk Auto
                 </button>
                 <button onclick="switchTab('inzicht')" id="tab-inzicht" class="flex-1 px-6 py-3 text-center font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-colors">
@@ -123,7 +123,10 @@
                         <div class="space-y-4">
                             <div>
                                 <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto</label>
-                                <input type="button" id="foto" name="foto" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="openImageUploaderModal()">
+                                <input type="hidden" id="foto" name="foto">
+                                <button type="button" id="fotoButton" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left text-gray-500 bg-white hover:bg-gray-50 transition-colors">
+                                    Selecteer een foto
+                                </button>
                             </div>
                             <div>
                                 <label for="merk" class="block text-sm font-medium text-gray-700 mb-1">Merk</label>
@@ -160,7 +163,7 @@
                             </div>
 
                             <div class="flex gap-3 pt-4">
-                                <button type="submit" class="flex-1 bg-eisblue text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
                                     Opslaan
                                 </button>
                                 <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
@@ -188,7 +191,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold">Auto Gebruik</h3>
                             <div class="flex gap-2">
-                                <button onclick="switchCarPeriod('week')" id="car-btn-week" class="px-3 py-1.5 text-sm rounded-md bg-eisblue text-white font-medium transition-colors">
+                                <button onclick="switchCarPeriod('week')" id="car-btn-week" class="px-3 py-1.5 text-sm rounded-md bg-eisgroen text-white font-medium transition-colors">
                                     Week
                                 </button>
                                 <button onclick="switchCarPeriod('month')" id="car-btn-month" class="px-3 py-1.5 text-sm rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
@@ -257,7 +260,7 @@
                         </div>
 
                         <div class="flex gap-3 pt-4">
-                            <button type="submit" class="flex-1 bg-eisblue text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            <button type="submit" class="flex-1 bg-eisgroen text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
                                 Toevoegen
                             </button>
                             <button type="button" onclick="closeAddCarModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition-colors">
@@ -275,17 +278,45 @@
     </div>
 
     <!-- Custom Image Uploader Modal -->
-        <div id="imageUploaderModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-                <h2 class="text-2xl font-bold">Foto's</h2>
+    <div id="imageUploaderModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center z-10">
+                <h2 class="text-2xl font-bold">Selecteer Auto Foto</h2>
                 <button onclick="closeImageUploaderModal()" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
             </div>
-            <div>
-                <!-- TODO:
-                - Display all car images (under folder /assets/cars)
-                - Add a button to upload another image (to /cars) -->
-                <button id="addImage">+</button>
+            
+            <div class="p-6">
+                <!-- Upload Section -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div class="flex flex-col items-center">
+                        <label for="imageUploadInput" id="uploadImageBtn" class="cursor-pointer bg-eisgroen text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-md inline-block">
+                            + Nieuwe Foto Uploaden
+                        </label>
+                        <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                        <p class="text-sm text-gray-500 mt-2">JPG, PNG, GIF (max 2MB)</p>
+                    </div>
+                    
+                    <!-- Upload Message -->
+                    <div id="uploadMessage" class="hidden mt-4"></div>
+                </div>
+                
+                <!-- Divider -->
+                <div class="relative mb-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Bestaande foto's</span>
+                    </div>
+                </div>
+                
+                <!-- Image Gallery -->
+                <div id="imageGalleryContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    <!-- Images will be loaded here dynamically -->
+                    <div class="col-span-full text-center py-8 text-gray-500">
+                        Laden...
+                    </div>
+                </div>
             </div>
         </div>
     </div>

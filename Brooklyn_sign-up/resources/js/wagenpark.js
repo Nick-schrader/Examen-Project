@@ -24,6 +24,16 @@ export function openModal(id) {
     document.getElementById('kenteken').value = auto.kenteken;
     document.getElementById('type').value = auto.type;
     document.getElementById('beschikbaar').value = auto.beschikbaar;
+    
+    // Populate foto field - IMPORTANT FIX
+    const fotoInput = document.getElementById('foto');
+    if (fotoInput) {
+        fotoInput.value = auto.foto || '';
+        // Update the button text to show current image
+        if (window.updateImageButtonText) {
+            window.updateImageButtonText('fotoButton', auto.foto || '');
+        }
+    }
 
     // Populate inzicht tab
     document.getElementById('carNameInzicht').textContent = auto.merk;
@@ -70,9 +80,9 @@ export function switchTab(tab) {
 
     if (tab === 'bewerk') {
         // Activate bewerk tab
-        bewerkTab.classList.add('border-eisblue', 'text-eisblue');
+        bewerkTab.classList.add('border-eisgroen', 'text-eisgroen');
         bewerkTab.classList.remove('border-transparent', 'text-gray-500');
-        inzichtTab.classList.remove('border-eisblue', 'text-eisblue');
+        inzichtTab.classList.remove('border-eisgroen', 'text-eisgroen');
         inzichtTab.classList.add('border-transparent', 'text-gray-500');
         
         // Show bewerk content
@@ -80,9 +90,9 @@ export function switchTab(tab) {
         inzichtContent.classList.add('hidden');
     } else {
         // Activate inzicht tab
-        inzichtTab.classList.add('border-eisblue', 'text-eisblue');
+        inzichtTab.classList.add('border-eisgroen', 'text-eisgroen');
         inzichtTab.classList.remove('border-transparent', 'text-gray-500');
-        bewerkTab.classList.remove('border-eisblue', 'text-eisblue');
+        bewerkTab.classList.remove('border-eisgroen', 'text-eisgroen');
         bewerkTab.classList.add('border-transparent', 'text-gray-500');
         
         // Show inzicht content
@@ -100,9 +110,9 @@ export function switchCarPeriod(period) {
         const btn = document.getElementById(btnId);
         if (btnId === `car-btn-${period}`) {
             btn.classList.remove('bg-gray-200', 'text-gray-700');
-            btn.classList.add('bg-eisblue', 'text-white');
+            btn.classList.add('bg-eisgroen', 'text-white');
         } else {
-            btn.classList.remove('bg-eisblue', 'text-white');
+            btn.classList.remove('bg-eisgroen', 'text-white');
             btn.classList.add('bg-gray-200', 'text-gray-700');
         }
     });
@@ -122,9 +132,9 @@ export function switchPeriod(period) {
         const btn = document.getElementById(btnId);
         if (btnId === `btn-${period}`) {
             btn.classList.remove('bg-gray-200', 'text-gray-700');
-            btn.classList.add('bg-eisblue', 'text-white');
+            btn.classList.add('bg-eisgroen', 'text-white');
         } else {
-            btn.classList.remove('bg-eisblue', 'text-white');
+            btn.classList.remove('bg-eisgroen', 'text-white');
             btn.classList.add('bg-gray-200', 'text-gray-700');
         }
     });
@@ -135,33 +145,17 @@ export function switchPeriod(period) {
 
 function loadCarGraphData(carId, period) {
     // This function will load graph data for a specific car
-    // You'll need to implement the backend endpoint and graph rendering
     console.log(`Loading graph data for car ${carId} with period ${period}`);
-    
-    // TODO: Fetch data from backend and render graph
-    // Example:
-    // fetch(`/api/autos/${carId}/usage?period=${period}`)
-    //     .then(response => response.json())
-    //     .then(data => renderCarGraph(data))
-    //     .catch(error => console.error('Error loading car data:', error));
 }
 
 function loadOverviewGraphData(period) {
     // This function will load graph data for all cars overview
     console.log(`Loading overview graph data with period ${period}`);
-    
-    // TODO: Fetch data from backend and render graph
-    // Example:
-    // fetch(`/api/autos/overview?period=${period}`)
-    //     .then(response => response.json())
-    //     .then(data => renderOverviewGraph(data))
-    //     .catch(error => console.error('Error loading overview data:', error));
 }
 
 export async function submitForm(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
     const carId = document.getElementById('carId').value;
     const errorDiv = document.getElementById('errorMessage');
     
@@ -169,6 +163,16 @@ export async function submitForm(event) {
     if (errorDiv) {
         errorDiv.classList.add('hidden');
     }
+    
+    // Create FormData and explicitly add all fields including foto
+    const formData = new FormData();
+    formData.append('_token', document.querySelector('input[name="_token"]').value);
+    formData.append('_method', 'PUT');
+    formData.append('merk', document.getElementById('merk').value);
+    formData.append('kenteken', document.getElementById('kenteken').value);
+    formData.append('type', document.getElementById('type').value);
+    formData.append('beschikbaar', document.getElementById('beschikbaar').value);
+    formData.append('foto', document.getElementById('foto').value); // IMPORTANT: Include foto
     
     try {
         const response = await fetch(`/autos/${carId}`, {
@@ -217,6 +221,11 @@ export function openAddCarModal() {
     document.getElementById('add_type').value = '1';
     document.getElementById('add_beschikbaar').value = '1';
     document.getElementById('add_foto').value = '';
+    
+    // Reset the button text
+    if (window.updateImageButtonText) {
+        window.updateImageButtonText('add_fotoButton', '');
+    }
 
     // Clear any previous error messages
     const errorDiv = document.getElementById('addErrorMessage');
@@ -236,13 +245,21 @@ export function closeAddCarModal() {
 export async function submitAddCarForm(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
     const errorDiv = document.getElementById('addErrorMessage');
     
     // Hide error message
     if (errorDiv) {
         errorDiv.classList.add('hidden');
     }
+    
+    // Create FormData and explicitly add all fields including foto
+    const formData = new FormData();
+    formData.append('_token', document.querySelector('input[name="_token"]').value);
+    formData.append('merk', document.getElementById('add_merk').value);
+    formData.append('kenteken', document.getElementById('add_kenteken').value);
+    formData.append('type', document.getElementById('add_type').value);
+    formData.append('beschikbaar', document.getElementById('add_beschikbaar').value);
+    formData.append('foto', document.getElementById('add_foto').value); // IMPORTANT: Include foto
     
     try {
         const response = await fetch('/autos', {
@@ -278,9 +295,49 @@ export async function submitAddCarForm(event) {
     }
 }
 
+export function removeCar() {
+    // Get car id
+    const id = document.getElementById('carId').value;
+
+    // Check if car exists
+    if (!id) {
+        console.log("NO CAR FOUND");
+        return;
+    }
+    console.log("CAR WILL BE REMOVED:", id);
+
+    // Get crsf token
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Call remove url
+    fetch(`/autos/remove/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Delete failed');
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        alert(data.message);
+        
+        // Example: remove car row from page
+        document.getElementById(`car-${id}`)?.remove();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Er ging iets mis bij het verwijderen.');
+    });
+}
+
+
 // Initialize event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Close modal when clicking outside
+    // Close modals when clicking outside
     const modal = document.getElementById('carModal');
     if (modal) {
         modal.addEventListener('click', function(e) {
@@ -289,13 +346,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Close add car modal when clicking outside
     const addModal = document.getElementById('addCarModal');
     if (addModal) {
         addModal.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeAddCarModal();
+            }
+        });
+    }
+
+    const imageUploaderModal = document.getElementById('imageUploaderModal');
+    if (imageUploaderModal) {
+        imageUploaderModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageUploaderModal();
             }
         });
     }
@@ -316,24 +380,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-export function closeImageUploaderModal() {
-    document.getElementById('imageUploaderModal').classList.add('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-export function openImageUploaderModal() {
-    document.getElementById('imageUploaderModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-export function removeCar() {
-    console.log("CAR WILL BE REMOVED");
-}
-
 // Make functions globally available
 window.removeCar = removeCar;
-window.openImageUploaderModal = openImageUploaderModal;
-window.closeImageUploaderModal = closeImageUploaderModal;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.submitForm = submitForm;

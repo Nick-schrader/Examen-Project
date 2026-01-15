@@ -9,6 +9,7 @@ use App\Models\Auto;
 class AutoController extends Controller
 {
 
+    // Main path for car images
     public $carImagesFilePath = 'assets/cars';
     
     public function index()
@@ -24,6 +25,7 @@ class AutoController extends Controller
             'kenteken' => 'required|string|max:255',
             'type' => 'required|in:1,2',
             'beschikbaar' => 'required|in:1,2,3,4',
+            'foto' => 'nullable|string|max:255',
         ]);
 
         $auto = Auto::findOrFail($id);
@@ -36,6 +38,55 @@ class AutoController extends Controller
         ]);
     }
 
+    public function getCarImages()
+    {
+        $carImagesPath = public_path($this->carImagesFilePath);
+        $images = [];
+        
+        // Check if directory exists
+        if (!is_dir($carImagesPath)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Directory does not exist: ' . $carImagesPath,
+                'images' => []
+            ]);
+        }
+        
+        // Get the files under the car iameges path
+        $files = scandir($carImagesPath);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..' && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file)) {
+                $images[] = $file;
+            }
+        }
+        
+        return response()->json([
+            'success' => true,
+            'images' => $images,
+            'path' => $carImagesPath,
+            'public_url' => asset('assets/cars/') 
+        ]);
+    }
+
+    public function uploadCarImage(Request $request)
+    {
+        // Image is required
+        $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Get the file and move it to the correct folder
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($this->carImagesFilePath), $filename);
+
+        return response()->json([
+            'success' => true,
+            'filename' => $filename,
+            'message' => 'Afbeelding succesvol geüpload'
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -43,17 +94,11 @@ class AutoController extends Controller
             'kenteken' => 'required|string|max:255',
             'type' => 'required|in:1,2',
             'beschikbaar' => 'required|in:1,2,3,4',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|string|max:255',
         ]);
 
-        // Handle file upload if present
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path($this->carImagesFilePath), $filename);
-            $validated['foto'] = $filename;
-        } else {
-            // Default image if none provided
+        // If image is not provided, use default image
+        if (empty($validated['foto'])) {
             $validated['foto'] = 'default-car.jpg';
         }
 
@@ -62,6 +107,25 @@ class AutoController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Auto succesvol toegevoegd',
+            'auto' => $auto
+        ]);
+    }
+
+    public function remove($id) {
+        $auto = Auto::findOrFail($id);
+
+        if (!$auto) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Auto niet gevonden'
+            ], 404);
+        }
+
+        $auto->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Auto succesvol verwijderd',
             'auto' => $auto
         ]);
     }

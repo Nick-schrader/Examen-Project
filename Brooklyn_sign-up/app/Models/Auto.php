@@ -18,6 +18,7 @@ class Auto extends Model
         'merk',
         'type',
         'beschikbaar',
+        'foto',
     ];
 
     public function roosterItems()
