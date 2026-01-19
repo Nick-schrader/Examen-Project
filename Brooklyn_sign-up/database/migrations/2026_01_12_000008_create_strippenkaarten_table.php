@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('strippenkaarten', function (Blueprint $table) {
+        Schema::create('strippenkaart', function (Blueprint $table) {
             $table->id();
             $table->foreignId('leerling_id')->constrained('users')->cascadeOnDelete();
             $table->integer('tegoed')->default(0);
@@ -20,7 +20,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('strippenkaarten');
+        Schema::dropIfExists('strippenkaart');
     }
 };
 

@@ -1,6 +1,6 @@
 @php
     $datum_en_tijd = is_array($lesson) ? $lesson['datum_en_tijd'] : $lesson->datum_en_tijd;
-    $auto = is_array($lesson) ? $lesson['auto'] : $lesson->auto;
+    $auto = $lesson->autoItem;
     $dt = \DateTime::createFromFormat('d/m/Y H:i:s', $datum_en_tijd);
 @endphp
 
@@ -25,7 +25,7 @@
         </div>
     </div>
         <div class="flex items-center justify-between mt-2">
-            <span class="inline-block px-4 py-2 text-base font-medium rounded-lg text-eisblue bg-eisgeel">Auto: {{ optional(DB::table('auto')->where('id', $auto)->first())->kenteken ?? 'Onbekend' }}</span>
+            <span class="inline-block px-4 py-2 text-base font-medium rounded-lg text-eisblue bg-eisgeel">Auto: {{ $auto->kenteken }}</span>
         </div>
     </a>
     <div x-show="showPopUp" @close="showPopUp = false" style="display: none;">

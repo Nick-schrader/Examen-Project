@@ -10,8 +10,6 @@ class Auto extends Model
     use HasFactory;
 
     protected $table = 'auto';
-    
-    public $timestamps = false;
 
     protected $fillable = [
         'kenteken',

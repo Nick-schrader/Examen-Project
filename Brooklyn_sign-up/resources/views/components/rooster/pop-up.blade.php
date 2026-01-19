@@ -1,12 +1,20 @@
 <?php
-    $verslag = DB::table('verslag')->where('rooster_item_id', $lesson->id)->first();
-    $instructeur = DB::table('users')->where('id', $lesson->instructeur_id)->first();
-    $auto = DB::table('auto')->where('id', $lesson->auto)->first();
+    $verslag = $lesson->verslag;
+    $instructeur = $lesson->instructeur;
+    $auto = $lesson->autoItem;
+
+    $date = DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
+    if ($date instanceof DateTime) {
+        $timestamp = $date->getTimestamp();
+        $editAllowed = (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
+    } else {
+        // If the date cannot be parsed, safely disallow editing
+        $editAllowed = false;
+    }
 ?>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+<div class="fixed inset-0 flex items-center justify-center z-[70] bg-black/40">
     <div class="relative w-full max-w-xl p-10 bg-white border-2 shadow-2xl rounded-3xl border-eisblue">
-        <!-- Alpine.js Close Button -->
         <button type="button"
             class="absolute text-3xl font-bold text-gray-400 top-4 right-4 hover:text-eisblue focus:outline-none"
             @click="$dispatch('close')"
@@ -15,10 +23,30 @@
         </button>
         <div class="flex flex-col items-center gap-6">
             <h3 class="mb-4 text-3xl font-extrabold tracking-wide text-eisblue drop-shadow">Lesdetails</h3>
-            <div class="w-full space-y-4 text-lg text-left text-gray-800">
+            <div class="w-full space-y-4 text-lg text-left text-gray-800" x-data="{ showEditPopup: false }">
                 <div><span class="text-xl font-semibold text-eisblue">Datum & tijd:</span> <span class="text-lg text-gray-900">{{ $lesson->datum_en_tijd }}</span></div>
                 <div><span class="text-xl font-semibold text-eisblue">Instructeur:</span> <span class="text-lg text-gray-900">{{ $instructeur->naam ?? 'Onbekend' }}</span> <span class="text-base text-gray-500">({{ $instructeur->telefoon ?? '' }})</span></div>
                 <div><span class="text-xl font-semibold text-eisblue">Auto:</span> <span class="text-lg text-gray-900">{{ $auto->merk ?? 'Onbekend' }}</span> <span class="text-base text-gray-500">({{ $auto->kenteken ?? '' }})</span></div>
+                @if ($editAllowed)
+                    <div>
+                        <x-rooster.button @click.prevent="showEditPopup = true">
+                            Aanpassen
+                        </x-rooster.button>
+                    </div>
+                    <div>
+                        <form action="/rooster" method="post">
+                            @csrf
+                            @method('delete')
+                            <x-rooster.button class="bg-eisgroen" type="submit">
+                                Verwijder
+                            </x-rooster.button>
+                            <input type="hidden" name="id" id="id" value="{{ $lesson->id }}" />
+                        </form>
+                    </div>
+                @endif
+                <div style="display: none" x-show="showEditPopup" @close="showEditPopup = false">
+                    <x-rooster.edit :add="false" :info="$lesson" />
+                </div>
                 @if ($verslag)
                     <div class="mt-6">
                         <p class="mb-2 text-2xl font-bold text-eisblue">Verslag</p>

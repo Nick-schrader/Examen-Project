@@ -37,6 +37,8 @@ Route::get('/agenda', function () {
 
 Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
 
+// profiel paths
+
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profiel', [ProfileController::class, 'update'])->name('profile.update');
@@ -44,11 +46,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profiel', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// leerling rooster views
+// leerling rooster paths
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
     Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
+    Route::post('/rooster', [RoosterController::class, 'store'])->name('rooster.store');
+    Route::patch('/rooster', [RoosterController::class, 'update'])->name('rooster.patch');
+    Route::delete('/rooster', [RoosterController::class, 'destroy'])->name('rooster.destroy');
 });
 
 // Wagenpark views
