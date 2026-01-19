@@ -137,31 +137,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // // REVIEWS
-        // $reviews = [];
-        // foreach ($roosterItems as $item) {
-        //     $reviews[] = Review::create([
-        //         'rooster_item_id' => $item->id,
-        //         'rating' => $faker->numberBetween(1, 5),
-        //         'comment' => $faker->sentence,
-        //         'status' => $faker->numberBetween(0, 2),
-        //         'leerling_id' => $item->leerling_id,
-        //         'created_at' => Carbon::now(),
-        //         'updated_at' => Carbon::now(),
-        //     ]);
-        // }
-
-        // // REVIEW FLAGS (only ~1/3 of reviews get flagged)
-        // $flaggedReviews = $faker->randomElements($reviews, (int) ceil(count($reviews) / 3));
-        // foreach ($flaggedReviews as $review) {
-        //     ReviewFlag::create([
-        //         'review_id' => $review->id,
-        //         'reason' => $faker->sentence,
-        //         'created_at' => Carbon::now(),
-        //         'updated_at' => Carbon::now(),
-        //     ]);
-        // }
-
         // AUTO GEBRUIK
         foreach ($autos as $auto) {
             for ($i = 0; $i < $faker->numberBetween(1, 3); $i++) {
