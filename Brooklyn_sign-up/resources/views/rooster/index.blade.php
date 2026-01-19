@@ -14,7 +14,3 @@
         <x-rooster.edit :add="true" />
     </div>
 </x-app-layout>
-
-<script>
-
-</script>
