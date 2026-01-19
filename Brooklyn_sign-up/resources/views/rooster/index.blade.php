@@ -8,7 +8,7 @@
         </x-rooster.button>
     </div>
 
-    <x-rooster.week :rooster="$rooster"/>
+    <x-rooster.week :rooster="$rooster" :history="$history"/>
 
     <div style="display: none" x-show="showPopUp" @close="showPopUp = false">
         <x-rooster.edit :add="true" />

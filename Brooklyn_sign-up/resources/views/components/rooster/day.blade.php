@@ -29,6 +29,6 @@
         </div>
     </a>
     <div x-show="showPopUp" @close="showPopUp = false" style="display: none;">
-        <x-rooster.pop-up :lesson="$lesson" />
+        <x-rooster.pop-up :lesson="$lesson" :history="$history" />
     </div>
 </div>

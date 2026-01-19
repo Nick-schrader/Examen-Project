@@ -150,7 +150,7 @@ class RoosterController extends Controller
         }
 
         $roosterItem->delete();
-        SC::add($request->user()->id, false);
+        SC::add2($request->user()->id, false);
 
         return redirect('/rooster');
     }

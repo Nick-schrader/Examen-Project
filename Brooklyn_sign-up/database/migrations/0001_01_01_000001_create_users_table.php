@@ -22,8 +22,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('auto_preference')->nullable();
             $table->foreign('auto_preference')->references('id')->on('auto')->nullOnDelete();
             $table->timestamps();
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
         });
     }
 

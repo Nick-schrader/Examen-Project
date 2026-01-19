@@ -9,7 +9,7 @@
     @else
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             @foreach($lessons as $les)
-                <x-rooster.day :lesson="$les" />
+                <x-rooster.day :lesson="$les" :history="$history"/>
             @endforeach
         </div>
     @endif

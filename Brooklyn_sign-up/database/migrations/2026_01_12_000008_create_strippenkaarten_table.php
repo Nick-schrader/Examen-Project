@@ -11,10 +11,9 @@ return new class extends Migration {
     {
         Schema::create('strippenkaarten', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('leerling_id');
-            $table->integer('tegoed');
-            $table->date('verval_datum');
-            $table->foreign('leerling_id')->references('id')->on('accounts')->cascadeOnDelete();
+            $table->foreignId('leerling_id')->constrained('users')->cascadeOnDelete();
+            $table->integer('tegoed')->default(0);
+            $table->date('verval_datum')->nullable();
             $table->timestamps();
         });
     }
@@ -24,3 +23,4 @@ return new class extends Migration {
         Schema::dropIfExists('strippenkaarten');
     }
 };
+

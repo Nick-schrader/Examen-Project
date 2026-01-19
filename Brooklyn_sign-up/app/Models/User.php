@@ -40,6 +40,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function strippenkaart()
+    {
+        return $this->hasOne(Strippenkaart::class, 'leerling_id', 'id');
+    }
+
+
     /**
      * Get the attributes that should be cast.
      *
@@ -50,6 +56,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-        ];
+        ];  
+    }
+
+    /**
+     * Check if the user is an eigenaar.
+     *
+     * @return bool
+     */
+    public function isEigenaar(): bool
+    {
+        return $this->type === 3;
     }
 }
