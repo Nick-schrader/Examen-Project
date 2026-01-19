@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoosterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\AutoController;
+use App\Http\Controllers\StrippenkaartController;
+use App\Http\Controllers\ReviewController;
+
+Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -30,9 +36,17 @@ Route::get('/agenda', function () {
 })->middleware(['auth', 'verified'])->name('agenda');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profiel', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profiel/adres', [ProfileController::class, 'adresupdate'])->name('profile.adresupdate');
+    Route::delete('/profiel', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// leerling rooster views
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
+    Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
 });
 
 // Wagenpark views
@@ -54,4 +68,7 @@ Route::post('/autos/upload-image', [AutoController::class, 'uploadCarImage'])->n
 
 // DEBUG
 Route::get('/autos/debug-usage', [AutoController::class, 'debugUsageData']);
+Route::post('/strippenkaart/add', [StrippenkaartController::class, 'add'])->name('strippenkaart.add');
+
+
 require __DIR__.'/auth.php';
