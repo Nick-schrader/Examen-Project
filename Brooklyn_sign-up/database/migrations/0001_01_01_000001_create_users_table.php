@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('adres');
             $table->unsignedBigInteger('auto_preference')->nullable();
             $table->foreign('auto_preference')->references('id')->on('auto')->nullOnDelete();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
