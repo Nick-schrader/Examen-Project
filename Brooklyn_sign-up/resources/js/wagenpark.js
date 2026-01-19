@@ -434,10 +434,14 @@ export async function removeCar() {
             }
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        let data = {};
+        try {
+            data = JSON.parse(text);
+        } catch {}
         
         if (response.ok && data.success) {
-            alert(data.message || 'Auto succesvol verwijderd');
+            console.log('Auto succesvol verwijderd');
             closeModal();
             location.reload();
         } else {
