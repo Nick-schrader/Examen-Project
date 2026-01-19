@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('autos', function (Blueprint $table) {
+        Schema::create('auto', function (Blueprint $table) {
             $table->id();
             $table->string('kenteken')->unique();
             $table->string('merk');
@@ -21,6 +21,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('autos');
+        Schema::dropIfExists('auto');
     }
 };

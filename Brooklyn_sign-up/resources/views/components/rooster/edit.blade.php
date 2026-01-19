@@ -25,6 +25,8 @@
             @csrf
             @if(!$add)
                 @method('PATCH')
+            @else
+                <x-rooster.strippenkaarten />
             @endif
             <div class="flex flex-col gap-4">
                 <x-rooster.form.date :value="$datum ?? null" />
@@ -40,6 +42,9 @@
                     @endforeach
                 </x-rooster.form.select>
                 <x-rooster.button type="submit">Verstuur</x-rooster.button>
+                @if (!!$info)
+                    <input value="{{ $info->id }}" type="hidden" name="id" id="id" />
+                @endif
             </div>
         </form>
     </div>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Models\RoosterItem;
+use App\Http\Controllers\StrippenkaartController as SC;
+
 class RoosterController extends Controller
 {
     private function getRooster($userId): object|array {
@@ -24,6 +26,37 @@ class RoosterController extends Controller
                     });
 
         return $past ? $rooster : $rooster->reverse();
+    }
+
+    private function validate(Request $request, $patch = false) {
+        $rules = array_filter([
+            'date' => 'required|date_format:d/m/Y',
+            'time' => 'required|date_format:H:i:s',
+            'instructeur' => 'required|exists:users,id',
+            'auto' => 'required|exists:auto,id',
+            'id' => $patch ? [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $roosterItem = RoosterItem::find($value);
+                    if (!$roosterItem || $roosterItem->leerling_id !== $request->user()->id) {
+                        $fail('Je mag alleen je eigen roosteritem aanpassen.');
+                    }
+                }
+            ] : null,
+        ]);
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            abort(400, 'Validation failed: ' . json_encode($validator->errors()->all()));
+        }
+        return true;
+    }
+
+    private function timeCheck($request) {
+        $lesson = RoosterItem::find($request->id);
+        $date = \DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
+        $timestamp = $date ? $date->getTimestamp() : 0;
+        return (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
     }
 
     public function get(Request $request): View {
@@ -48,48 +81,77 @@ class RoosterController extends Controller
             'history' => true
         ]);
     }
+
     public function store(Request $request) {
+        $isPatch = $request->has('id');
         $date = $request->date;
         $time = $request->time;
+        $user_id = $request->user()->id;
 
-        if (empty($date) || empty($time)) {
-            return;
+        if ($isPatch) {
+            // PATCH (update)
+            try {
+                $this->validate($request, true);
+            } catch (\Exception $e) {
+                abort(400, $e->getMessage());
+            }
+            if (empty($date) || empty($time)) {
+                abort(400, 'Date or time is empty');
+            }
+            $datetime = $date . ' ' . $time;
+            $roosterItem = RoosterItem::find($request->id);
+            if ($roosterItem) {
+                $roosterItem->datum_en_tijd = $datetime;
+                $roosterItem->auto = $request->auto;
+                $roosterItem->instructeur_id = $request->instructeur;
+                $roosterItem->save();
+            }
+            return redirect('/rooster');
+        } else {
+            // POST (create)
+            $kaart = SC::getNext($user_id);
+            if (!$kaart || !$kaart->tegoed) {
+                abort(400, 'Geen geldige strippenkaart of tegoed gevonden.');
+            }
+            if ($kaart->tegoed <= 0) {
+                abort(400, 'Geen tegoed meer op de strippenkaart.');
+            }
+            try {
+                $this->validate($request);
+            } catch (\Exception $e) {
+                abort(400, $e->getMessage());
+            }
+            if (empty($date) || empty($time)) {
+                abort(400, 'Date or time is empty');
+            }
+            $datetime = $date . ' ' . $time;
+            RoosterItem::create([
+                'leerling_id' => $user_id,
+                'instructeur_id' => $request->instructeur,
+                'datum_en_tijd' => $datetime,
+                'auto' => $request->auto
+            ]);
+            return SC::remove($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
         }
-
-        $datetime = $date . ' ' . $time;
-
-        RoosterItem::create([
-            'leerling_id' => $request->user()->id,
-            'instructeur_id' => $request->instructeur,
-            'datum_en_tijd' => $datetime,
-            'auto' => $request->auto
-        ]);
-
-        return redirect('/rooster');
-    }
-
-    public function patch(Request $request) {
-        $date = $request->date;
-        $time = $request->time;
-
-        if (empty($date) || empty($time)) {
-            return;
-        }
-
-        $datetime = $date . ' ' . $time;
-
-        $roosterItem = RoosterItem::find($request->id);
-        if ($roosterItem) {
-            $roosterItem->datum_en_tijd = $datetime;
-            $roosterItem->auto = $request->auto;
-            $roosterItem->instructeur_id = $request->instructeur;
-            $roosterItem->save();
-        }
-
-        return redirect('/rooster');
     }
 
     public function destroy(Request $request) {
+        $id = $request->id;
+        $roosterItem = RoosterItem::find($id);
 
+        if (!$roosterItem) {
+            abort(404, 'Rooster item niet gevonden.');
+        }
+        if ($roosterItem->leerling_id !== $request->user()->id) {
+            abort(403, 'Je hebt geen rechten om dit rooster item te verwijderen.');
+        }
+        if (!$this->timeCheck($request)) {
+            abort(400, 'Tijd is niet geldig voor deze bewerking.');
+        }
+
+        $roosterItem->delete();
+        SC::add($request->user()->id, false);
+
+        return redirect('/rooster');
     }
 }

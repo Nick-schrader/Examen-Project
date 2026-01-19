@@ -2,11 +2,14 @@
     $verslag = $lesson->verslag;
     $instructeur = $lesson->instructeur;
     $auto = $lesson->autoItem;
+
+    $date = DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
+    $timestamp = $date->getTimestamp();
+    $editAllowed = (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
 ?>
 
 <div class="fixed inset-0 flex items-center justify-center z-[70] bg-black/40">
     <div class="relative w-full max-w-xl p-10 bg-white border-2 shadow-2xl rounded-3xl border-eisblue">
-        <!-- Alpine.js Close Button -->
         <button type="button"
             class="absolute text-3xl font-bold text-gray-400 top-4 right-4 hover:text-eisblue focus:outline-none"
             @click="$dispatch('close')"
@@ -19,18 +22,25 @@
                 <div><span class="text-xl font-semibold text-eisblue">Datum & tijd:</span> <span class="text-lg text-gray-900">{{ $lesson->datum_en_tijd }}</span></div>
                 <div><span class="text-xl font-semibold text-eisblue">Instructeur:</span> <span class="text-lg text-gray-900">{{ $instructeur->naam ?? 'Onbekend' }}</span> <span class="text-base text-gray-500">({{ $instructeur->telefoon ?? '' }})</span></div>
                 <div><span class="text-xl font-semibold text-eisblue">Auto:</span> <span class="text-lg text-gray-900">{{ $auto->merk ?? 'Onbekend' }}</span> <span class="text-base text-gray-500">({{ $auto->kenteken ?? '' }})</span></div>
-                <div>
-                    <x-rooster.button @click.prevent="showEditPopup = true">
-                        Aanpassen
-                    </x-rooster.button>
-                </div>
-                <div>
-                    <x-rooster.button class="bg-eisgroen">
-                        Verwijder
-                    </x-rooster.button>
-                </div>
+                @if ($editAllowed)
+                    <div>
+                        <x-rooster.button @click.prevent="showEditPopup = true">
+                            Aanpassen
+                        </x-rooster.button>
+                    </div>
+                    <div>
+                        <form action="/rooster" method="post">
+                            @csrf
+                            @method('delete')
+                            <x-rooster.button class="bg-eisgroen" type="submit">
+                                Verwijder
+                            </x-rooster.button>
+                            <input type="hidden" name="id" id="id" value="{{ $lesson->id }}" />
+                        </form>
+                    </div>
+                @endif
                 <div style="display: none" x-show="showEditPopup" @close="showEditPopup = false">
-                    <x-rooster.edit :add="true" :info="$lesson" />
+                    <x-rooster.edit :add="false" :info="$lesson" />
                 </div>
                 @if ($verslag)
                     <div class="mt-6">

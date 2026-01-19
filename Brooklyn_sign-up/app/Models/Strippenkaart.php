@@ -9,7 +9,7 @@ class Strippenkaart extends Model
 {
     use HasFactory;
 
-    protected $table = 'strippenkaarten';
+    protected $table = 'strippenkaart';
 
     protected $fillable = [
         'leerling_id',
