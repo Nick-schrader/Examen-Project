@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('auto_gebruiken', function (Blueprint $table) {
+        Schema::create('auto_gebruik', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('auto_id');
             $table->dateTime('start_gebruik');
@@ -21,6 +21,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('auto_gebruiken');
+        Schema::dropIfExists('auto_gebruik');
     }
 };
