@@ -133,7 +133,7 @@ class RoosterController extends Controller
                 'datum_en_tijd' => $datetime,
                 'auto' => $request->auto
             ]);
-            return SC::remove($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
+            return SC::removeFromTegoed($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
         }
     }
 
@@ -153,7 +153,7 @@ class RoosterController extends Controller
 
         $roosterItem->delete();
         $kaart = SC::getNext($request->user()->id);
-        if ($kaart) SC::add2($request->user()->id, false);
+        if ($kaart) SC::add2tegoed($request->user()->id, false);
 
         return redirect('/rooster');
     }

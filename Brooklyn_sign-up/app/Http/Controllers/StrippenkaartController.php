@@ -46,7 +46,7 @@ class StrippenkaartController extends Controller {
         return redirect()->back()->with('success', $request->amount . ' strippen toegevoegd aan ' . $user->naam . '!');
     }
 
-    public static function add2($user_id, $kaart_id, $amount = 1) {
+    public static function add2tegoed($user_id, $kaart_id, $amount = 1) {
         if (!$user_id || !$kaart_id) abort(400, 'User ID of kaart ID ontbreekt.');
         if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id);
 
@@ -61,7 +61,7 @@ class StrippenkaartController extends Controller {
         return true;
     }
 
-    public static function remove($user_id, $kaart_id, $amount = 1) {
+    public static function removeFromTegoed($user_id, $kaart_id, $amount = 1) {
         if (!$user_id || !$kaart_id) abort(400, 'User ID of kaart ID ontbreekt.');
         if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id);
 
