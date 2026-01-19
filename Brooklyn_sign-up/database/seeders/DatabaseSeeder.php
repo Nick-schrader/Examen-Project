@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-    $faker = \Faker\Factory::create('nl_NL');\
+    $faker = \Faker\Factory::create('nl_NL');
 
         // AUTOS
         $autos = [];
