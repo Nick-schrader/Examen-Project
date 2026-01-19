@@ -4,8 +4,13 @@
     $auto = $lesson->autoItem;
 
     $date = DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
-    $timestamp = $date->getTimestamp();
-    $editAllowed = (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
+    if ($date instanceof DateTime) {
+        $timestamp = $date->getTimestamp();
+        $editAllowed = (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
+    } else {
+        // If the date cannot be parsed, safely disallow editing
+        $editAllowed = false;
+    }
 ?>
 
 <div class="fixed inset-0 flex items-center justify-center z-[70] bg-black/40">
