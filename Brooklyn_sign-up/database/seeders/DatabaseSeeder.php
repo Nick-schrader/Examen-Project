@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
     // Strippenkaarten
-    DB::table('strippenkaarten')->insert([
+    DB::table('strippenkaart')->insert([
             [
                 'leerling_id' => 2,
                 'tegoed' => 10,
