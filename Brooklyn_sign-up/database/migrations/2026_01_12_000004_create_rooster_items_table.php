@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('instructeur_id');
             $table->dateTime('datum_en_tijd');
             $table->unsignedBigInteger('auto');
-            $table->foreign('leerling_id')->references('id')->on('accounts')->cascadeOnDelete();
-            $table->foreign('instructeur_id')->references('id')->on('accounts')->cascadeOnDelete();
+            $table->foreign('leerling_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('instructeur_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('auto')->references('id')->on('auto')->cascadeOnDelete();
             $table->timestamps();
         });
