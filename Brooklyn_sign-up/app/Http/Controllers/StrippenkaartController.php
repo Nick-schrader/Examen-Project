@@ -43,7 +43,11 @@ class StrippenkaartController extends Controller {
         $strippenkaart->tegoed += $request->amount;
         $strippenkaart->save();
 
-        return redirect()->back()->with('success', $request->amount . ' strippen toegevoegd aan ' . $user->naam . '!');
+        return redirect()->route('agenda', [
+            'modal' => 'strippenkaart',
+            'user' => $user->id,
+        ])->with('success', $request->amount . ' strippen toegevoegd aan ' . $user->naam . '!');
+
     }
 
     public static function add2tegoed($user_id, $kaart_id, $amount = 1) {

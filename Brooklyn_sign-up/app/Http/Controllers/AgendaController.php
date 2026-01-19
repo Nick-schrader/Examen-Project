@@ -31,35 +31,98 @@ class AgendaController extends Controller
             $timeBlocks[] = sprintf('%02d:00', $i);
         }
 
-        // Lessen ophalen voor deze week
-        $weekStart = $startOfWeek->copy()->startOfDay();
-        $weekEnd   = $startOfWeek->copy()->addDays(6)->endOfDay();
-
+        // ⭐ ALLE lessen ophalen (ongeacht week)
         $lessen = DB::table('rooster_items')
             ->where('instructeur_id', auth()->id())
-            ->whereBetween('datum_en_tijd', [
-                $weekStart->format('d/m/Y H:i:s'),
-                $weekEnd->format('d/m/Y H:i:s')
-            ])
             ->get();
 
-        // Specifieke les voor modal
+        // ⭐ ALLE datums normaliseren naar d/m/Y H:i:s
+        $lessen = $lessen->map(function ($les) {
+
+            $raw = trim($les->datum_en_tijd);
+
+            // Probeer met seconden
+            try {
+                $carbon = Carbon::createFromFormat('d/m/Y H:i:s', $raw);
+            } catch (\Exception $e1) {
+
+                // Probeer zonder seconden
+                try {
+                    $carbon = Carbon::createFromFormat('d/m/Y H:i', $raw);
+                } catch (\Exception $e2) {
+                    // Laat originele waarde staan als alles faalt
+                    return $les;
+                }
+            }
+
+            // Forceer exact formaat
+            $les->datum_en_tijd = $carbon->format('d/m/Y H:i:s');
+            return $les;
+        });
+
+        // Les ophalen
         $les = null;
+
+        // 1. Via datum + tijd
         if ($request->filled(['date', 'time'])) {
+
             $datetime = Carbon::createFromFormat('Y-m-d H:i', $request->date . ' ' . $request->time)
                 ->format('d/m/Y H:i:s');
 
             $les = DB::table('rooster_items')
                 ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
                 ->join('auto', 'rooster_items.auto', '=', 'auto.id')
-                ->select('rooster_items.*', 'leerling.naam as leerling_naam', 'auto.merk as autos_merk', 'auto.kenteken')
+                ->select(
+                    'rooster_items.*',
+                    'leerling.naam as leerling_naam',
+                    'leerling.telefoon',
+                    'leerling.adres',
+                    'auto.merk as auto_merk',
+                    'auto.kenteken'
+                )
                 ->where('rooster_items.instructeur_id', auth()->id())
                 ->where('rooster_items.datum_en_tijd', $datetime)
                 ->first();
         }
 
+        // 2. Via les_id
+        if ($request->filled('les_id')) {
+
+            $les = DB::table('rooster_items')
+                ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
+                ->join('auto', 'rooster_items.auto', '=', 'auto.id')
+                ->select(
+                    'rooster_items.*',
+                    'leerling.naam as leerling_naam',
+                    'leerling.telefoon',
+                    'leerling.adres',
+                    'auto.merk as auto_merk',
+                    'auto.kenteken'
+                )
+                ->where('rooster_items.instructeur_id', auth()->id())
+                ->where('rooster_items.id', $request->les_id)
+                ->first();
+        }
+
+        // Datum & tijd splitsen voor modal
+        if ($les) {
+            $carbon = Carbon::createFromFormat('d/m/Y H:i:s', $les->datum_en_tijd);
+            $les->datum = $carbon->format('d-m-Y');
+            $les->tijd  = $carbon->format('H:i');
+        }
+
+        // Verslag ophalen
+        $verslag = null;
+
+        if ($les) {
+            $verslag = DB::table('verslag')
+                ->where('rooster_item_id', $les->id)
+                ->first();
+        }
+
         return view('agenda', [
             'les' => $les,
+            'verslag' => $verslag,
             'lessen' => $lessen,
             'startOfWeek' => $startOfWeek,
             'prev' => $prev,
@@ -67,5 +130,51 @@ class AgendaController extends Controller
             'days' => $days,
             'timeBlocks' => $timeBlocks,
         ]);
+    }
+
+    public function verslagOpslaan(Request $request)
+    {
+        $request->validate([
+            'rooster_item_id' => 'required|integer',
+            'verslag' => 'required|string|min:5',
+        ]);
+
+        $bestaat = DB::table('verslag')
+            ->where('rooster_item_id', $request->rooster_item_id)
+            ->exists();
+
+        if ($bestaat) {
+            DB::table('verslag')
+                ->where('rooster_item_id', $request->rooster_item_id)
+                ->update([
+                    'verslag' => $request->verslag,
+                    'datum_aangepast' => now()->format('d/m/Y'),
+                    'updated_at' => now(),
+                ]);
+        } else {
+            DB::table('verslag')->insert([
+                'rooster_item_id' => $request->rooster_item_id,
+                'verslag' => $request->verslag,
+                'datum_gemaakt' => now()->format('d/m/Y'),
+                'datum_aangepast' => now()->format('d/m/Y'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Verslag opgeslagen.');
+    }
+
+    public function verslagVerwijderen(Request $request)
+    {
+        $request->validate([
+            'rooster_item_id' => 'required|integer',
+        ]);
+
+        DB::table('verslag')
+            ->where('rooster_item_id', $request->rooster_item_id)
+            ->delete();
+
+        return redirect()->back()->with('success', 'Verslag verwijderd.');
     }
 }

@@ -1,8 +1,9 @@
 @php
-    $targetUserId = request('user'); // geen fallback naar auth()->id()
+    $targetUserId = request('user');
 @endphp
 
 <div class="flex items-center justify-center">
+
     <!-- Open button -->
     <button id="open-strippenkaart"
         class="w-[240px] h-10 bg-eisgeel rounded-md text-lg font-bold text-center flex items-center justify-center hover:bg-yellow-400 cursor-pointer">
@@ -13,37 +14,43 @@
     <div id="strippenkaart-modal"
          class="fixed inset-0 bg-black bg-opacity-40 hidden z-50 flex items-center justify-center">
 
-        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md relative flex flex-col items-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
 
-            <!-- Close button -->
-            <button class="x-button absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
-
-            <!-- Title -->
-            <h2 class="text-2xl font-bold mb-6 text-center">Strippenkaart toevoegen</h2>
-
-            <!-- User selector (centered) -->
-            <x-user-selector :selected-user-id="$targetUserId" modal="strippenkaart" />
-
-            <!-- LessenAantal (centered) -->
-            <div class="w-full flex justify-center mb-6">
-                <x-lessenAantal :selected-user-id="$targetUserId" />
+            {{-- Header --}}
+            <div class="bg-eisblue text-white px-4 py-3 flex items-center justify-between">
+                <x-application-logo class="block w-auto h-9 fill-current text-white" />
+                <button class="x-button text-white hover:text-red-500 text-3xl leading-none">&times;</button>
             </div>
+            {{-- Content --}}
+            <div class="p-8 flex flex-col items-center">
 
-            <!-- Buttons row (centered) -->
-            <div class="flex flex-row gap-6 justify-center w-full">
-                @foreach([15,20,25] as $amount)
-                    <form method="POST" action="{{ route('strippenkaart.add') }}">
-                        @csrf
-                        <input type="hidden" name="amount" value="{{ $amount }}">
-                        <input type="hidden" name="user_id" value="{{ $targetUserId }}">
-                        <button type="submit"
-                            class="strippenkaart-close-button flex w-[60px] h-[60px] bg-eisgeel rounded-md justify-center items-center text-lg font-bold hover:bg-yellow-400">
-                            +{{ $amount }}
-                        </button>
-                    </form>
-                @endforeach
+                <!-- Title -->
+                <h2 class="text-2xl font-bold mb-6 text-center text-eisblue">Strippenkaart toevoegen</h2>
+
+                <!-- User selector -->
+                <x-user-selector :selected-user-id="$targetUserId" modal="strippenkaart" />
+
+                <!-- LessenAantal -->
+                <div class="w-full flex justify-center mb-6">
+                    <x-lessenAantal :selected-user-id="$targetUserId" />
+                </div>
+
+                <!-- Buttons row -->
+                <div class="flex flex-row gap-6 justify-center w-full">
+                    @foreach([15,20,25] as $amount)
+                        <form method="POST" action="{{ route('strippenkaart.add') }}">
+                            @csrf
+                            <input type="hidden" name="amount" value="{{ $amount }}">
+                            <input type="hidden" name="user_id" value="{{ $targetUserId }}">
+                            <button type="submit"
+                                class="strippenkaart-close-button flex w-[60px] h-[60px] bg-eisgeel rounded-md justify-center items-center text-lg font-bold hover:bg-yellow-400">
+                                +{{ $amount }}
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+
             </div>
-
         </div>
     </div>
 </div>

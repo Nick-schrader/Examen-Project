@@ -1,56 +1,48 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Elementen ophalen (één keer)
+
+    // URL parameters (één keer!)
+    const params = new URLSearchParams(window.location.search);
+
+    // --- Agenda modal ---
     const modal = document.getElementById('agenda-modal');
     const closeBtn = document.getElementById('agenda-modal-close');
 
-    // --- Modal auto-open via URL param (modal=les) ---
-    (function handleModalParam() {
-        if (!modal) return;
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('modal') === 'les') {
-            modal.classList.remove('hidden');
-
-            // Verwijder modal param zodat refresh hem niet opnieuw opent
-            params.delete('modal');
-            const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-            window.history.replaceState({}, '', newUrl);
-        }
-    })();
-
-    // --- Sluit modal via knop ---
-    if (closeBtn && modal) {
-        closeBtn.addEventListener('click', function () {
-            modal.classList.add('hidden');
-        });
+    if (params.get('modal') === 'les' && modal) {
+        modal.classList.remove('hidden');
+        params.delete('modal');
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.history.replaceState({}, '', newUrl);
     }
 
-    // --- Klik buiten modal sluit hem ---
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    }
+
     if (modal) {
-        modal.addEventListener('click', function (e) {
+        modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.add('hidden');
         });
     }
 
-    // --- Collapsible days voor kleine schermen ---
-    document.querySelectorAll('.day-toggle').forEach(function (toggleBtn) {
-        toggleBtn.addEventListener('click', function () {
-            const dayIndex = this.getAttribute('data-day-index');
-            const content = document.querySelector('.day-content[data-day-index="' + dayIndex + '"]');
-            if (content) content.classList.toggle('hidden');
+    // --- Verslag modal ---
+    const verslagModal = document.getElementById('verslag-modal');
+    const verslagClose = document.getElementById('verslag-modal-close');
 
-            const icon = this.querySelector('.toggle-icon');
-            if (icon) icon.classList.toggle('rotate-180');
-        });
-    });
+    if (params.get('modal') === 'verslag' && verslagModal) {
+        verslagModal.classList.remove('hidden');
+        params.delete('modal');
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.history.replaceState({}, '', newUrl);
+    }
 
-    // --- Standaard collapse gedrag op small screens ---
-    if (window.innerWidth < 768) {
-        document.querySelectorAll('.day-content').forEach(function (content, idx) {
-            if (idx !== 0) content.classList.add('hidden');
-        });
-    } else {
-        document.querySelectorAll('.day-content').forEach(function (content) {
-            content.classList.remove('hidden');
+    if (verslagClose && verslagModal) {
+        verslagClose.addEventListener('click', () => verslagModal.classList.add('hidden'));
+    }
+
+    if (verslagModal) {
+        verslagModal.addEventListener('click', (e) => {
+            if (e.target === verslagModal) verslagModal.classList.add('hidden');
         });
     }
+
 });
