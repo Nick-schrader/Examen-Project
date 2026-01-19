@@ -73,7 +73,6 @@ class RoosterController extends Controller
             abort(403);
         }
         $rooster = $this->getRooster($request->user()->id);
-        echo '<script>console.log('.json_encode($rooster).')</script>';
         return view('rooster.index', [
             'rooster' => $this->sortAndFilterRooster($rooster),
             'history' => false
