@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    // Strippenkaarten
+    // strippenkaart
     for ($i = 0; $i < 5; $i++) {
         \App\Models\Strippenkaart::create([
             'leerling_id' => $faker->numberBetween(1, 10),

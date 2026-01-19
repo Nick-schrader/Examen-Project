@@ -93,7 +93,7 @@
 
     Relaties:
     - strippenkaart ↔ account (leerling)
-    - één leerling kan meerdere strippenkaarten hebben
+    - één leerling kan meerdere strippenkaart hebben
 
 
     KORTING
