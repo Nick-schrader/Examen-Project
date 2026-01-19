@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('auto');
             $table->foreign('leerling_id')->references('id')->on('accounts')->cascadeOnDelete();
             $table->foreign('instructeur_id')->references('id')->on('accounts')->cascadeOnDelete();
-            $table->foreign('auto')->references('id')->on('autos')->cascadeOnDelete();
+            $table->foreign('auto')->references('id')->on('auto')->cascadeOnDelete();
             $table->timestamps();
         });
     }

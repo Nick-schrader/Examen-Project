@@ -1,3 +1,12 @@
+@props(['les' => null, 'verslag' => null])
+
+@if(!$les)
+    <div class="bg-red-50 text-red-700 p-4 rounded">
+        Geen les geselecteerd.
+    </div>
+    @php return; @endphp
+@endif
+
 <div class="bg-eisgeel rounded-lg p-4 shadow-sm border border-eisgroen/30">
 
     @if(session('success'))
@@ -6,7 +15,6 @@
         </div>
     @endif
 
-    {{-- OPSLAAN / BIJWERKEN --}}
     <form id="verslag-form" method="POST" action="{{ route('verslag.opslaan') }}">
         @csrf
 
@@ -16,21 +24,17 @@
             name="verslag"
             class="bg-white border border-gray-300 rounded-md w-full p-2 resize-none"
             rows="10"
-            placeholder="Voer hier het verslag in..."
         >{{ $verslag->verslag ?? '' }}</textarea>
     </form>
 
-    {{-- KNOPPEN --}}
     <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
-        {{-- OPSLAAN --}}
         <button type="submit"
                 form="verslag-form"
                 class="bg-eisgroen text-white px-4 py-2 rounded shadow hover:bg-[#a3b97f] transition w-full sm:w-auto">
             {{ $verslag ? 'Verslag bijwerken' : 'Verslag opslaan' }}
         </button>
 
-        {{-- VERWIJDEREN --}}
         @if($verslag)
             <form method="POST" action="{{ route('verslag.verwijderen') }}" class="w-full sm:w-auto">
                 @csrf

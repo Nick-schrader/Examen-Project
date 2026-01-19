@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('auto_id');
             $table->dateTime('start_gebruik');
             $table->dateTime('eind_gebruik');
-            $table->foreign('auto_id')->references('id')->on('autos')->cascadeOnDelete();
+            $table->foreign('auto_id')->references('id')->on('auto')->cascadeOnDelete();
             $table->timestamps();
         });
     }

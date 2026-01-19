@@ -10,7 +10,7 @@
 ])
 
 <div class="flex justify-center w-full mt-6">
-<div class="w-full max-w-6xl bg-eisgeel rounded-2xl overflow-hidden shadow-2xl">
+<div class="w-full max-w-6xl overflow-hidden shadow-2xl bg-eisgeel rounded-2xl">
     <div class="flex">
         <div class="flex flex-1 flex-col md:flex-row">
 
@@ -54,7 +54,7 @@
                                         // Datum + tijd in hetzelfde formaat als in DB
                                         $datetimeCheck = Carbon\Carbon::createFromFormat('Y-m-d H:i', $day->format('Y-m-d') . ' ' . $time)
                                             ->format('d/m/Y H:i:s');
-                                                                
+
                                         // Check of er een les is
                                         $heeftLes = $lessen->contains('datum_en_tijd', $datetimeCheck);
                                     @endphp

@@ -16,6 +16,8 @@ class Korting extends Model
         'percentage',
         'reason',
         'is_used',
+        'created_at',
+        'updated_at',
     ];
 
     public function leerling()
