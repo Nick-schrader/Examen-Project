@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
     // Autos
-    DB::table('autos')->insert([
+    DB::table('auto')->insert([
             [
                 'kenteken' => 'AB-123-C',
                 'merk' => 'Volkswagen',

@@ -51,8 +51,8 @@ class AgendaController extends Controller
 
             $les = DB::table('rooster_items')
                 ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
-                ->join('autos', 'rooster_items.auto', '=', 'autos.id')
-                ->select('rooster_items.*', 'leerling.naam as leerling_naam', 'autos.merk as autos_merk', 'autos.kenteken')
+                ->join('auto', 'rooster_items.auto', '=', 'auto.id')
+                ->select('rooster_items.*', 'leerling.naam as leerling_naam', 'auto.merk as autos_merk', 'auto.kenteken')
                 ->where('rooster_items.instructeur_id', auth()->id())
                 ->where('rooster_items.datum_en_tijd', $datetime)
                 ->first();
