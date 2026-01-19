@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
+    $faker = \Faker\Factory::create('nl_NL');
 
         // AUTOS
         $autos = [];
@@ -41,15 +41,20 @@ class DatabaseSeeder extends Seeder
         // USERS
         $users = [];
         for ($i = 0; $i < 10; $i++) {
+            $straat = $faker->streetName;
+            $huisnummer = $faker->buildingNumber;
+            $postcode = strtoupper($faker->postcode);
+            $stad = $faker->city;
+            $adres = "ergensweg $straat -=- $huisnummer -=- $postcode -=- ergensstad $stad";
             $users[] = User::create([
                 'naam' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make($faker->password),
                 'telefoon' => $faker->phoneNumber,
                 'type' => $faker->numberBetween(1, 3),
-                'geboorte_datum' => $faker->date('Y-m-d', '2010-01-01'),
-                'geslacht' => $faker->randomElement(['M', 'V']),
-                'adres' => $faker->address,
+                'geboorte_datum' => Carbon::parse($faker->date('Y-m-d', '2010-01-01'))->format('d/m/y'),
+                'geslacht' => $faker->randomElement(['Man', 'Vrouw']),
+                'adres' => $adres,
                 'auto_preference' => optional($faker->optional()->randomElement($autos))->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -61,7 +66,7 @@ class DatabaseSeeder extends Seeder
             Strippenkaart::create([
                 'leerling_id' => $faker->randomElement($users)->id,
                 'tegoed' => $faker->numberBetween(1, 20),
-                'verval_datum' => Carbon::now()->addMonths($faker->numberBetween(1, 12)),
+                'verval_datum' => Carbon::now()->addMonths($faker->numberBetween(1, 12))->format('d/m/y H:i:s'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -85,7 +90,7 @@ class DatabaseSeeder extends Seeder
             $roosterItems[] = RoosterItem::create([
                 'leerling_id' => $faker->randomElement($users)->id,
                 'instructeur_id' => $faker->randomElement($users)->id,
-                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month'),
+                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/y H:i:s'),
                 'auto' => $faker->randomElement($autos)->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -97,8 +102,8 @@ class DatabaseSeeder extends Seeder
             Verslag::create([
                 'rooster_item_id' => $item->id,
                 'verslag' => $faker->paragraph,
-                'datum_gemaakt' => $faker->date('Y-m-d', '-1 month'),
-                'datum_aangepast' => $faker->date('Y-m-d'),
+                'datum_gemaakt' => Carbon::parse($faker->date('Y-m-d', '-1 month'))->format('d/m/y H:i:s'),
+                'datum_aangepast' => Carbon::parse($faker->date('Y-m-d'))->format('d/m/y H:i:s'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -133,8 +138,8 @@ class DatabaseSeeder extends Seeder
             for ($i = 0; $i < $faker->numberBetween(1, 3); $i++) {
                 AutoGebruik::create([
                     'auto_id' => $auto->id,
-                    'start_gebruik' => $faker->dateTimeBetween('-2 months', '-1 month'),
-                    'eind_gebruik' => $faker->dateTimeBetween('-1 month', 'now'),
+                    'start_gebruik' => $faker->dateTimeBetween('-2 months', '-1 month')->format('d/m/y H:i:s'),
+                    'eind_gebruik' => $faker->dateTimeBetween('-1 month', 'now')->format('d/m/y H:i:s'),
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ]);
