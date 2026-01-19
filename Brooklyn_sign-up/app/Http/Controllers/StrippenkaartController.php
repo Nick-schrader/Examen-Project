@@ -64,7 +64,8 @@ class StrippenkaartController extends Controller {
 
     public static function removeFromTegoed($user_id, $kaart_id, $amount = 1) {
         if (!$user_id || !$kaart_id) abort(400, 'User ID of kaart ID ontbreekt.');
-        if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id);
+        if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id)->id;
+        if (!$kaart_id) abort(400, 'kaart id niet correct opgehaald');
 
         StrippenkaartController::allowed($user_id, $kaart_id);
         $strippenkaart = Strippenkaart::find($kaart_id);
