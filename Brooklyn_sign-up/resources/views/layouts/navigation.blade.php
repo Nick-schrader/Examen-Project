@@ -24,22 +24,11 @@
                     <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                         Contact
                     </x-nav-link>
-                    @auth
-                        @if(Auth::user()->type === 2 || Auth::user()->type === 3)
-                            <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
-                                Agenda
-                            </x-nav-link>
-                        @elseif(Auth::user()->type === 1)
-                            <x-nav-link :href="route('rooster.get')" :active="request()->routeIs('rooster.get')">
-                                Rooster
-                            </x-nav-link>
-                        @elseif(Auth::user()->type === 0)
-                            <x-nav-link :href="route('wordLeerling')" :active="request()->routeIs('wordLeerling')">
-                                Word leerling
-                            </x-nav-link>
-                        @endif
-                    @endauth
-
+                    @if(Auth::user()->isEigenaar())
+                    <x-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                        {{ __('Wagenpark') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -113,6 +102,11 @@
             <x-responsive-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
                 {{ __('Agenda') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->isEigenaar())
+            <x-responsive-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                {{ __('Wagenpark') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

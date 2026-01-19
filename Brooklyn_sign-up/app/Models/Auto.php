@@ -9,13 +9,16 @@ class Auto extends Model
 {
     use HasFactory;
 
-    protected $table = 'autos';
+    protected $table = 'auto';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'kenteken',
         'merk',
         'type',
         'beschikbaar',
+        'foto',
     ];
 
     public function roosterItems()
@@ -28,7 +31,7 @@ class Auto extends Model
         return $this->hasMany(AutoGebruik::class, 'auto_id');
     }
 
-    public function accounts()
+    public function users()
     {
         return $this->hasMany(User::class, 'auto_preference');
     }
