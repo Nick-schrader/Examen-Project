@@ -28,7 +28,7 @@
 
             {{-- ⭐ Lege optie --}}
             <option value="" disabled {{ $currentUser ? '' : 'selected' }}>
-                -- Selecteer {{ $label }} --
+                Selecteer {{ $label }}
             </option>
 
             @foreach($users as $user)
