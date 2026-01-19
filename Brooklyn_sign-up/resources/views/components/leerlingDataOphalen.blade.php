@@ -1,14 +1,14 @@
-{{-- resources/views/components/leerlingDataOphalen.blade.php --}}
 @props(['les' => null])
 
 <div class="py-2 border-t flex flex-col gap-2">
 
     @if($les)
-        <div><h1><strong>Leerling ID:</strong> {{ $les->leerling_id }}</h1></div>
-        <div><h1><strong>Datum en Tijd:</strong> {{ $les->datum_en_tijd }}</h1></div>
-        <div><h1><strong>Auto:</strong> {{ $les->auto }}</h1></div>
+        <div><strong>Leerling:</strong> {{ $les->leerling_naam }}</div>
+        <div><strong>Datum en Tijd:</strong> {{ $les->datum_en_tijd }}</div>
+        <div><strong>Auto:</strong> {{ $les->autos_merk }}</div>
+        <div><strong>Kenteken:</strong> {{ $les->kenteken }}</div>
     @else
-        <div><h1>Geen les ingepland op dit tijdstip.</h1></div>
+        <div>Geen les ingepland op dit tijdstip.</div>
     @endif
 
 </div>

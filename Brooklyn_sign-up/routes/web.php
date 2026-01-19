@@ -31,6 +31,8 @@ Route::get('/agenda', function () {
     return view('agenda');
 })->middleware(['auth', 'verified'])->name('agenda');
 
+Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profiel', [ProfileController::class, 'update'])->name('profile.update');
