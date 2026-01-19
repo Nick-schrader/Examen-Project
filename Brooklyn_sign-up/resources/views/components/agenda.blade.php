@@ -1,5 +1,6 @@
 @props([
     'les' => null,
+    'verslag' => null,
     'lessen' => collect(),
     'startOfWeek',
     'prev',
@@ -66,7 +67,7 @@
                                         <input type="hidden" name="modal" value="les">
                                         <button type="submit"
                                             class="w-full text-center py-3 border-b transition cursor-pointer
-                                                   {{ $heeftLes ? 'bg-green-300 hover:bg-green-400' : 'hover:bg-gray-100' }}">
+                                                   {{ $heeftLes ? 'bg-eisgroen hover:bg-[#a3b97f]' : 'hover:bg-gray-100' }}">
                                             {{ $blockLabel }}
                                         </button>
                                     </form>
@@ -80,13 +81,40 @@
 
                 {{-- Modal --}}
                 <div id="agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-                    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[300px] relative">
-                        <button id="agenda-modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+                    <div class="bg-white rounded-lg shadow-lg min-w-[300px] w-full max-w-md overflow-hidden ml-[20px] mr-[20px]">
+                    
+                        {{-- Header --}}
+                        <div class="bg-eisblue text-white px-4 py-3 flex items-center justify-between">
+                            <x-application-logo class="block w-auto text-gray-800 fill-current h-9" />
+                            <button id="agenda-modal-close" class="text-white hover:text-red-500 text-3xl leading-none">&times;</button>
+                        </div>
+                    
+                        {{-- Content --}}
+                        <div class="p-6">
+                            <x-leerlingDataOphalen :les="$les" :verslag="$verslag" />
+                        </div>
 
-                        <x-leerlingDataOphalen :les="$les" />
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+{{-- Verslag modal --}}
+<div id="verslag-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+    <div class="bg-white rounded-lg shadow-lg min-w-[300px] w-full max-w-xl overflow-hidden ml-[20px] mr-[20px]">
+
+        {{-- Header --}}
+        <div class="bg-eisblue text-white px-4 py-3 flex items-center justify-between">
+            <x-application-logo class="block w-auto h-9 fill-current text-white" />
+            <button id="verslag-modal-close" class="text-white hover:text-red-300 text-3xl leading-none">&times;</button>
+        </div>
+
+        {{-- Content --}}
+        <div class="p-6">
+            <x-verslagBijwerken :les="$les" :verslag="$verslag" />
+        </div>
+
     </div>
 </div>

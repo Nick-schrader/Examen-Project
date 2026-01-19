@@ -37,6 +37,12 @@ Route::get('/agenda', function () {
 
 Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
 
+Route::post('/verslag/toevoegen', [AgendaController::class, 'verslagOpslaan'])
+    ->name('verslag.opslaan');
+
+Route::post('/verslag/verwijderen', [AgendaController::class, 'verslagVerwijderen'])
+    ->name('verslag.verwijderen');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profiel', [ProfileController::class, 'update'])->name('profile.update');

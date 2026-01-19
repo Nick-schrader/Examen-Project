@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <x-agenda :les="$les" :lessen="$lessen" :start-of-week="$startOfWeek" :prev="$prev" :next="$next" :days="$days" :time-blocks="$timeBlocks" />
+    <x-agenda :les="$les" :verslag="$verslag" :lessen="$lessen" :start-of-week="$startOfWeek" :prev="$prev" :next="$next" :days="$days" :time-blocks="$timeBlocks" />
 
 </div>
 </x-app-layout>
