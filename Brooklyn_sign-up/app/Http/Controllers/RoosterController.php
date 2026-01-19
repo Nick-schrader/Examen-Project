@@ -113,9 +113,6 @@ class RoosterController extends Controller
             if (!$kaart || !$kaart->tegoed) {
                 abort(400, 'Geen geldige strippenkaart of tegoed gevonden.');
             }
-            if ($kaart->tegoed <= 0) {
-                abort(400, 'Geen tegoed meer op de strippenkaart.');
-            }
             try {
                 $this->validate($request);
             } catch (\Exception $e) {
