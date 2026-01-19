@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Strippenkaart;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class StrippenkaartController extends Controller {
     private static function allowed($user_id, $kaart_id) {
@@ -50,8 +51,10 @@ class StrippenkaartController extends Controller {
         if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id);
 
         StrippenkaartController::allowed($user_id, $kaart_id);
-
         $strippenkaart = Strippenkaart::find($kaart_id);
+
+        if ($strippenkaart->tegoed + $amount <= 0) return false;
+
         $strippenkaart->tegoed = $strippenkaart->tegoed + $amount;
         $strippenkaart->save();
 
@@ -63,8 +66,10 @@ class StrippenkaartController extends Controller {
         if ($kaart_id === false) $kaart_id = StrippenkaartController::getNext($user_id);
 
         StrippenkaartController::allowed($user_id, $kaart_id);
-
         $strippenkaart = Strippenkaart::find($kaart_id);
+
+        if ($strippenkaart->tegoed - $amount <= 0) return false;
+
         $strippenkaart->tegoed = $strippenkaart->tegoed - $amount;
         $strippenkaart->save();
 
