@@ -24,8 +24,7 @@
                     <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                         Contact
                     </x-nav-link>
-                    
-                    @auth
+                        @auth
                         @if(Auth::user()->type === 2 || Auth::user()->type === 3)
                             <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
                                 Agenda
@@ -46,7 +45,11 @@
                             </x-nav-link>
                         @endif
                     @endauth
-
+                    @if(Auth::user()->isEigenaar())
+                    <x-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                        {{ __('Wagenpark') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -117,12 +120,29 @@
             <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                 {{ __('Contact') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
-                {{ __('Agenda') }}
+                    @auth
+                        @if(Auth::user()->type === 2 || Auth::user()->type === 3)
+                            <x-responsive-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
+                                Agenda
+                            </x-responsive-nav-link>
+                        @elseif(Auth::user()->type === 1)
+                            <x-responsive-nav-link :href="route('rooster.get')" :active="request()->routeIs('rooster.get')">
+                                Rooster
+                            </x-responsive-nav-link>
+                        @elseif(Auth::user()->type === 0)
+                            <x-responsive-nav-link :href="route('wordLeerling')" :active="request()->routeIs('wordLeerling')">
+                                Word leerling
+                            </x-responsive-nav-link>
+                        @endif
+                    @endauth
+            @if(Auth::user()->isEigenaar())
+            <x-responsive-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
+                {{ __('Wagenpark') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('Beheer')" :active="request()->routeIs('Beheer')">
                 {{ __('Beheer') }}
             </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

@@ -16,6 +16,7 @@ class Review extends Model
         'rating',
         'comment',
         'status',
+        'leerling_id',
     ];
 
     public function roosterItem()

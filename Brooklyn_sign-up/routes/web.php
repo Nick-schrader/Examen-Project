@@ -5,6 +5,7 @@ use App\Http\Controllers\RoosterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AdminAgendaController;
+use App\Http\Controllers\AutoController;
 use App\Http\Controllers\StrippenkaartController;
 use App\Http\Controllers\ReviewController;
 
@@ -37,6 +38,14 @@ Route::get('/agenda', function () {
 Route::get('/Beheer', function () {
     return view('Beheer');
 })->middleware(['auth', 'verified'])->name('Beheer');
+Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
+
+Route::post('/verslag/toevoegen', [AgendaController::class, 'verslagOpslaan'])
+    ->name('verslag.opslaan');
+
+Route::post('/verslag/verwijderen', [AgendaController::class, 'verslagVerwijderen'])
+    ->name('verslag.verwijderen');
+// profiel paths
 
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -51,15 +60,35 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/reviews/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
 });
 
-
-
 // leerling rooster views
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
     Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
+    Route::post('/rooster', [RoosterController::class, 'store'])->name('rooster.store');
+    Route::patch('/rooster', [RoosterController::class, 'update'])->name('rooster.patch');
+    Route::delete('/rooster', [RoosterController::class, 'destroy'])->name('rooster.destroy');
 });
 
+// Wagenpark views
+Route::get('/wagenpark', [AutoController::class, 'index'])->middleware(['auth', 'verified'])->name('wagenpark');
+Route::put('/autos/{id}', [AutoController::class, 'update'])->name('autos.update');
+Route::post('/autos', [AutoController::class    , 'store'])->name('autos.store');
+Route::delete('/autos/remove/{id}', [AutoController::class, 'remove'])->name('autos.remove');
+// Get overview graph data (all cars)
+Route::get('/autos/usage-data', [AutoController::class, 'getCarUsageData'])
+    ->name('autos.usage-data');
+
+// Get specific car graph data
+Route::get('/autos/{id}/usage-data', [AutoController::class, 'getCarUsageData'])
+    ->name('autos.usage-data.single');
+
+// Image uploader
+Route::get('/autos/images', [AutoController::class, 'getCarImages'])->name('autos.images');
+Route::post('/autos/upload-image', [AutoController::class, 'uploadCarImage'])->name('autos.upload-image');
+
+// DEBUG
+Route::get('/autos/debug-usage', [AutoController::class, 'debugUsageData']);
 Route::post('/strippenkaart/add', [StrippenkaartController::class, 'add'])->name('strippenkaart.add');
 
 

@@ -9,13 +9,15 @@ class Korting extends Model
 {
     use HasFactory;
 
-    protected $table = 'kortingen';
+    protected $table = 'korting';
 
     protected $fillable = [
         'leerling_id',
         'percentage',
         'reason',
         'is_used',
+        'created_at',
+        'updated_at',
     ];
 
     public function leerling()

@@ -9,7 +9,7 @@ class AutoGebruik extends Model
 {
     use HasFactory;
 
-    protected $table = 'auto_gebruiken';
+    protected $table = 'auto_gebruik';
 
     protected $fillable = [
         'auto_id',

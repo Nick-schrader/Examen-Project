@@ -15,6 +15,8 @@ class Strippenkaart extends Model
         'leerling_id',
         'tegoed',
         'verval_datum',
+        'created_at',
+        'updated_at',
     ];
 
     public function leerling()

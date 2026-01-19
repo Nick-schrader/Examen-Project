@@ -26,6 +26,9 @@ class User extends Authenticatable
         'adres',
         'auto_preference',
         'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -54,6 +57,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-        ];
+        ];  
+    }
+
+    /**
+     * Check if the user is an eigenaar.
+     *
+     * @return bool
+     */
+    public function isEigenaar(): bool
+    {
+        return $this->type === 3;
     }
 }

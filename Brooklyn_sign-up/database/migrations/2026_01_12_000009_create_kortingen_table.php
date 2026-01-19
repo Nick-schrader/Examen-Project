@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('kortingen', function (Blueprint $table) {
+        Schema::create('korting', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('leerling_id');
             $table->integer('percentage');
             $table->text('reason');
             $table->boolean('is_used');
-            $table->foreign('leerling_id')->references('id')->on('accounts')->cascadeOnDelete();
+            $table->foreign('leerling_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('kortingen');
+        Schema::dropIfExists('korting');
     }
 };
