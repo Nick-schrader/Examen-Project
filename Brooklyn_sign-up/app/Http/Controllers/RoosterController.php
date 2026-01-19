@@ -52,6 +52,12 @@ class RoosterController extends Controller
         return true;
     }
 
+    private function validateDateTimeNotEmpty($date, $time) {
+        if (empty($date) || empty($time)) {
+            abort(400, 'Date or time is empty');
+        }
+    }
+
     private function timeCheck($request) {
         $lesson = RoosterItem::find($request->id);
         $date = \DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
@@ -95,9 +101,7 @@ class RoosterController extends Controller
             } catch (\Exception $e) {
                 abort(400, $e->getMessage());
             }
-            if (empty($date) || empty($time)) {
-                abort(400, 'Date or time is empty');
-            }
+            $this->validateDateTimeNotEmpty($date, $time);
             $datetime = $date . ' ' . $time;
             $roosterItem = RoosterItem::find($request->id);
             if ($roosterItem) {
@@ -118,9 +122,7 @@ class RoosterController extends Controller
             } catch (\Exception $e) {
                 abort(400, $e->getMessage());
             }
-            if (empty($date) || empty($time)) {
-                abort(400, 'Date or time is empty');
-            }
+            $this->validateDateTimeNotEmpty($date, $time);
             $datetime = $date . ' ' . $time;
             RoosterItem::create([
                 'leerling_id' => $user_id,
