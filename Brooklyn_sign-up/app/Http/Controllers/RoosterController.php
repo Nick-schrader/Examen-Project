@@ -54,6 +54,9 @@ class RoosterController extends Controller
 
     private function timeCheck($request) {
         $lesson = RoosterItem::find($request->id);
+        if (!$lesson) {
+            return false;
+        }
         $date = \DateTime::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
         $timestamp = $date ? $date->getTimestamp() : 0;
         return (now()->getTimestamp() + 86400) <= $timestamp ? true : false;
