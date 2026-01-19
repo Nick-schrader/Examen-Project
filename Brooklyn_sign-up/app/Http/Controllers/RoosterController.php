@@ -92,49 +92,52 @@ class RoosterController extends Controller
     }
 
     public function store(Request $request) {
-        $isPatch = $request->has('id');
+        // POST (create)
         $date = $request->date;
         $time = $request->time;
         $user_id = $request->user()->id;
 
-        if ($isPatch) {
-            // PATCH (update)
-            try {
-                $this->validate($request, true);
-            } catch (\Exception $e) {
-                abort(400, $e->getMessage());
-            }
-            $this->validateDateTimeNotEmpty($date, $time);
-            $datetime = $date . ' ' . $time;
-            $roosterItem = RoosterItem::find($request->id);
-            if ($roosterItem) {
-                $roosterItem->datum_en_tijd = $datetime;
-                $roosterItem->auto = $request->auto;
-                $roosterItem->instructeur_id = $request->instructeur;
-                $roosterItem->save();
-            }
-            return redirect('/rooster');
-        } else {
-            // POST (create)
-            $kaart = SC::getNext($user_id);
-            if (!$kaart || !$kaart->tegoed) {
-                abort(400, 'Geen geldige strippenkaart of tegoed gevonden.');
-            }
-            try {
-                $this->validate($request);
-            } catch (\Exception $e) {
-                abort(400, $e->getMessage());
-            }
-            $this->validateDateTimeNotEmpty($date, $time);
-            $datetime = $date . ' ' . $time;
-            RoosterItem::create([
-                'leerling_id' => $user_id,
-                'instructeur_id' => $request->instructeur,
-                'datum_en_tijd' => $datetime,
-                'auto' => $request->auto
-            ]);
-            return SC::removeFromTegoed($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
+        $kaart = SC::getNext($user_id);
+        if (!$kaart || !$kaart->tegoed) {
+            abort(400, 'Geen geldige strippenkaart of tegoed gevonden.');
         }
+        try {
+            $this->validate($request);
+        } catch (\Exception $e) {
+            abort(400, $e->getMessage());
+        }
+        $this->validateDateTimeNotEmpty($date, $time);
+        $datetime = $date . ' ' . $time;
+        RoosterItem::create([
+            'leerling_id' => $user_id,
+            'instructeur_id' => $request->instructeur,
+            'datum_en_tijd' => $datetime,
+            'auto' => $request->auto
+        ]);
+        return SC::removeFromTegoed($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
+    }
+
+    public function update(Request $request) {
+        // PATCH (update)
+        $date = $request->date;
+        $time = $request->time;
+        $user_id = $request->user()->id;
+
+        try {
+            $this->validate($request, true);
+        } catch (\Exception $e) {
+            abort(400, $e->getMessage());
+        }
+        $this->validateDateTimeNotEmpty($date, $time);
+        $datetime = $date . ' ' . $time;
+        $roosterItem = RoosterItem::find($request->id);
+        if ($roosterItem) {
+            $roosterItem->datum_en_tijd = $datetime;
+            $roosterItem->auto = $request->auto;
+            $roosterItem->instructeur_id = $request->instructeur;
+            $roosterItem->save();
+        }
+        return redirect('/rooster');
     }
 
     public function destroy(Request $request) {

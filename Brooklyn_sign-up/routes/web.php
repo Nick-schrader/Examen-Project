@@ -52,7 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
     Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
     Route::post('/rooster', [RoosterController::class, 'store'])->name('rooster.store');
-    Route::patch('/rooster', [RoosterController::class, 'patch'])->name('rooster.patch');
+    Route::patch('/rooster', [RoosterController::class, 'update'])->name('rooster.patch');
     Route::delete('/rooster', [RoosterController::class, 'destroy'])->name('rooster.destroy');
 });
 
