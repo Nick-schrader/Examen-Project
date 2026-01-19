@@ -15,9 +15,10 @@ return new class extends Migration {
             $table->unsignedTinyInteger('rating')->check('rating between 1 and 5');
             $table->text('comment');
             $table->string('status')->index();
-            $table->foreign('rooster_item_id')->references('id')->on('rooster_items')->cascadeOnDelete();
-            $table->foreign('leerling_id')->references('id')->on('uers')->cascadeOnDelete();
+            $table->unsignedBigInteger('leerling_id');
             $table->timestamps();
+            $table->foreign('rooster_item_id')->references('id')->on('rooster_items')->cascadeOnDelete();
+            $table->foreign('leerling_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

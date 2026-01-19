@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-    $faker = \Faker\Factory::create('nl_NL');
+    $faker = \Faker\Factory::create('nl_NL');\
 
         // AUTOS
         $autos = [];
@@ -45,13 +45,41 @@ class DatabaseSeeder extends Seeder
             $huisnummer = $faker->buildingNumber;
             $postcode = strtoupper($faker->postcode);
             $stad = $faker->city;
-            $adres = "ergensweg $straat -=- $huisnummer -=- $postcode -=- ergensstad $stad";
+            $adres = "$straat -=- $huisnummer -=- $postcode -=- $stad";
             $users[] = User::create([
                 'naam' => $faker->name,
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make($faker->password),
                 'telefoon' => $faker->phoneNumber,
                 'type' => $faker->numberBetween(1, 3),
+                'geboorte_datum' => Carbon::parse($faker->date('Y-m-d', '2010-01-01'))->format('d/m/y'),
+                'geslacht' => $faker->randomElement(['Man', 'Vrouw']),
+                'adres' => $adres,
+                'auto_preference' => optional($faker->optional()->randomElement($autos))->id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // Add 4 extra users with specific names, types, and a given hashed password
+        $extraUsers = [
+            ['naam' => 'admin', 'type' => 3],
+            ['naam' => 'instructeir', 'type' => 2],
+            ['naam' => 'leerling', 'type' => 1],
+            ['naam' => 'guest', 'type' => 0],
+        ];
+        foreach ($extraUsers as $extra) {
+            $straat = $faker->streetName;
+            $huisnummer = $faker->buildingNumber;
+            $postcode = strtoupper($faker->postcode);
+            $stad = $faker->city;
+            $adres = "ergensweg $straat -=- $huisnummer -=- $postcode -=- ergensstad $stad";
+            $users[] = User::create([
+                'naam' => $extra['naam'],
+                'email' => $faker->unique()->safeEmail,
+                'password' => '$2y$12$DD/1nEiqpUa3kyw1jlqypu9Z.BEzJo.5RKJnxDoFFwBVqkGY/Ie/y',
+                'telefoon' => $faker->phoneNumber,
+                'type' => $extra['type'],
                 'geboorte_datum' => Carbon::parse($faker->date('Y-m-d', '2010-01-01'))->format('d/m/y'),
                 'geslacht' => $faker->randomElement(['Man', 'Vrouw']),
                 'adres' => $adres,
@@ -109,29 +137,30 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // REVIEWS
-        $reviews = [];
-        foreach ($roosterItems as $item) {
-            $reviews[] = Review::create([
-                'rooster_item_id' => $item->id,
-                'rating' => $faker->numberBetween(1, 5),
-                'comment' => $faker->sentence,
-                'status' => $faker->numberBetween(0, 2),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
+        // // REVIEWS
+        // $reviews = [];
+        // foreach ($roosterItems as $item) {
+        //     $reviews[] = Review::create([
+        //         'rooster_item_id' => $item->id,
+        //         'rating' => $faker->numberBetween(1, 5),
+        //         'comment' => $faker->sentence,
+        //         'status' => $faker->numberBetween(0, 2),
+        //         'leerling_id' => $item->leerling_id,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ]);
+        // }
 
-        // REVIEW FLAGS (only ~1/3 of reviews get flagged)
-        $flaggedReviews = $faker->randomElements($reviews, (int) ceil(count($reviews) / 3));
-        foreach ($flaggedReviews as $review) {
-            ReviewFlag::create([
-                'review_id' => $review->id,
-                'reason' => $faker->sentence,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
+        // // REVIEW FLAGS (only ~1/3 of reviews get flagged)
+        // $flaggedReviews = $faker->randomElements($reviews, (int) ceil(count($reviews) / 3));
+        // foreach ($flaggedReviews as $review) {
+        //     ReviewFlag::create([
+        //         'review_id' => $review->id,
+        //         'reason' => $faker->sentence,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ]);
+        // }
 
         // AUTO GEBRUIK
         foreach ($autos as $auto) {
