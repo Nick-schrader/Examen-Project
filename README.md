@@ -42,6 +42,10 @@ php artisan migrate
 ```
 php artisan db:seed
 ```
+5. Run't de local host server
+```
+Npm run dev
+```
 # Auteurs
 * Julian Huis in 't Veld
 * Dion Gierman
