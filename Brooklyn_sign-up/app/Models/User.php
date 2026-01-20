@@ -26,6 +26,9 @@ class User extends Authenticatable
         'adres',
         'auto_preference',
         'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
     ];
 
     /**

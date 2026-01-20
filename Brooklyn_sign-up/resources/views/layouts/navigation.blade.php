@@ -29,6 +29,12 @@
                             <x-nav-link :href="route('agenda')" :active="request()->routeIs('agenda')">
                                 Agenda
                             </x-nav-link>
+                        @endif
+
+                        @if(Auth::user()->type === 3)
+                            <x-nav-link :href="route('Beheer')" :active="request()->routeIs('Beheer')">
+                                Beheer
+                            </x-nav-link>
                         @elseif(Auth::user()->type === 1)
                             <x-nav-link :href="route('rooster.get')" :active="request()->routeIs('rooster.get')">
                                 Rooster
@@ -132,6 +138,9 @@
             @if(Auth::user()->isEigenaar())
             <x-responsive-nav-link :href="route('wagenpark')" :active="request()->routeIs('wagenpark')">
                 {{ __('Wagenpark') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('Beheer')" :active="request()->routeIs('Beheer')">
+                {{ __('Beheer') }}
             </x-responsive-nav-link>
             @endif
         </div>

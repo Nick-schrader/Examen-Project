@@ -29,22 +29,40 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Validatie van alle velden
         $request->validate([
             'naam' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'telefoon' => ['required', 'string', 'max:20'],
+            'geboorte_datum' => ['required', 'date'],
+            'geslacht' => ['required', 'string', 'in:man,vrouw'],
+            'straat' => ['required', 'string', 'max:255'],
+            'huisnummer' => ['required', 'string', 'max:10'],
+            'postcode_stad' => ['required', 'string', 'max:255'],
         ]);
 
-        $user = User::create([
+        // Adres samenstellen in het gewenste formaat
+        $adres = $request->straat . ' -=- ' . $request->huisnummer . ' -=- ' . $request->postcode . ' -=- ' . $request->stad;
+
+
+        // User aanmaken
+        User::create([
             'naam' => $request->naam,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            // Always assign the default (non-privileged) role on self-registration.
+            'telefoon' => $request->telefoon,
+            'geboorte_datum' => $request->geboorte_datum,
+            'geslacht' => $request->geslacht,
+            'adres' => $adres,
             'type' => 1,
         ]);
 
+
+        // Event triggeren
         event(new Registered($user));
 
+        // Automatisch inloggen
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

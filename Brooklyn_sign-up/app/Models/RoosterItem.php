@@ -30,7 +30,7 @@ class RoosterItem extends Model
         return $this->belongsTo(User::class, 'instructeur_id');
     }
 
-    public function autoModel()
+    public function autoItem()
     {
         return $this->belongsTo(Auto::class, 'auto');
     }

@@ -7,95 +7,147 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
+use App\Models\User;
+use App\Models\Auto;
+use App\Models\Strippenkaart;
+use App\Models\Korting;
+use App\Models\RoosterItem;
+use App\Models\Verslag;
+use App\Models\Review;
+use App\Models\ReviewFlag;
+use App\Models\AutoGebruik;
+
 class DatabaseSeeder extends Seeder
 {
 
     public function run(): void
     {
-    // Users
-    DB::table('users')->insert([
-            [
-                'naam' => 'Admin',
-                'email' => 'admin@brooklyn.nl',
-                'password' => Hash::make('admin123'),
-                'telefoon' => '0612345678',
-                'type' => 3,
-                'geboorte_datum' => '1990-01-01',
-                'geslacht' => 'M',
-                'adres' => 'Adminstraat 1',
-                'auto_preference' => null,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'naam' => 'Leerling',
-                'email' => 'leerling@brooklyn.nl',
-                'password' => Hash::make('leerling123'),
-                'telefoon' => '0612345679',
-                'type' => 1,
-                'geboorte_datum' => '2005-05-05',
-                'geslacht' => 'V',
-                'adres' => 'Leerlinglaan 2',
-                'auto_preference' => null,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'naam' => 'Instructeur',
-                'email' => 'instructeur@brooklyn.nl',
-                'password' => Hash::make('instructeur123'),
-                'telefoon' => '0612345680',
-                'type' => 2,
-                'geboorte_datum' => '1980-10-10',
-                'geslacht' => 'M',
-                'adres' => 'Instructeurweg 3',
-                'auto_preference' => null,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
+    $faker = \Faker\Factory::create('nl_NL');
 
-    // Autos
-    DB::table('auto')->insert([
-            [
-                'kenteken' => 'AB-123-C',
-                'merk' => 'Volkswagen',
-                'type' => 1,
-                'beschikbaar' => true,
+        // AUTOS
+        $autos = [];
+        for ($i = 0; $i < 5; $i++) {
+            $autos[] = Auto::create([
+                'kenteken' => strtoupper($faker->bothify('??-###-?')),
+                'merk' => $faker->company,
+                'type' => $faker->numberBetween(1, 3),
+                'beschikbaar' => $faker->boolean,
+                'foto' => $faker->imageUrl(640, 480, 'cars', true),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-            [
-                'kenteken' => 'XY-987-Z',
-                'merk' => 'Toyota',
-                'type' => 2,
-                'beschikbaar' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-        ]);
+            ]);
+        }
 
-    // Strippenkaarten
-    DB::table('strippenkaarten')->insert([
-            [
-                'leerling_id' => 2,
-                'tegoed' => 10,
-                'verval_datum' => Carbon::now()->addMonths(6),
+        // USERS
+        $users = [];
+        for ($i = 0; $i < 10; $i++) {
+            $straat = $faker->streetName;
+            $huisnummer = $faker->buildingNumber;
+            $postcode = strtoupper($faker->postcode);
+            $stad = $faker->city;
+            $adres = "$straat -=- $huisnummer -=- $postcode -=- $stad";
+            $users[] = User::create([
+                'naam' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make($faker->password),
+                'telefoon' => $faker->phoneNumber,
+                'type' => $faker->numberBetween(1, 3),
+                'geboorte_datum' => Carbon::parse($faker->date('Y-m-d', '2010-01-01'))->format('d/m/y'),
+                'geslacht' => $faker->randomElement(['Man', 'Vrouw']),
+                'adres' => $adres,
+                'auto_preference' => optional($faker->optional()->randomElement($autos))->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-        ]);
+            ]);
+        }
 
-    // Kortingen
-    DB::table('kortingen')->insert([
-            [
-                'leerling_id' => 2,
-                'percentage' => 10,
-                'reason' => 'Introductiekorting',
-                'is_used' => false,
+        // Add 4 extra users with specific names, types, and a given hashed password
+        $extraUsers = [
+            ['naam' => 'admin', 'type' => 3, 'email' => 'admin@example.com'],
+            ['naam' => 'instructeur', 'type' => 2, 'email' => 'instructeur@example.com'],
+            ['naam' => 'leerling', 'type' => 1, 'email' => 'leerling@example.com'],
+            ['naam' => 'guest', 'type' => 0, 'email' => 'guest@example.com'],
+        ];
+        foreach ($extraUsers as $extra) {
+            $straat = $faker->streetName;
+            $huisnummer = $faker->buildingNumber;
+            $postcode = strtoupper($faker->postcode);
+            $stad = $faker->city;
+            $adres = "ergensweg $straat -=- $huisnummer -=- $postcode -=- ergensstad $stad";
+            $users[] = User::create([
+                'naam' => $extra['naam'],
+                'email' => $extra['email'],
+                'password' => '$2y$12$DD/1nEiqpUa3kyw1jlqypu9Z.BEzJo.5RKJnxDoFFwBVqkGY/Ie/y',
+                'telefoon' => $faker->phoneNumber,
+                'type' => $extra['type'],
+                'geboorte_datum' => Carbon::parse($faker->date('Y-m-d', '2010-01-01'))->format('d/m/y'),
+                'geslacht' => $faker->randomElement(['Man', 'Vrouw']),
+                'adres' => $adres,
+                'auto_preference' => optional($faker->optional()->randomElement($autos))->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
-        ]);
+            ]);
+        }
+
+        // STRIPPENKAART
+        for ($i = 0; $i < 5; $i++) {
+            Strippenkaart::create([
+                'leerling_id' => $faker->randomElement($users)->id,
+                'tegoed' => $faker->numberBetween(1, 20),
+                'verval_datum' => Carbon::now()->addMonths($faker->numberBetween(1, 12))->format('d/m/y H:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // KORTINGEN
+        for ($i = 0; $i < 5; $i++) {
+            Korting::create([
+                'leerling_id' => $faker->randomElement($users)->id,
+                'percentage' => $faker->numberBetween(5, 50),
+                'reason' => $faker->sentence,
+                'is_used' => $faker->boolean,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // ROOSTER ITEMS
+        $roosterItems = [];
+        for ($i = 0; $i < 10; $i++) {
+            $roosterItems[] = RoosterItem::create([
+                'leerling_id' => $faker->randomElement($users)->id,
+                'instructeur_id' => $faker->randomElement($users)->id,
+                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/y H:i:s'),
+                'auto' => $faker->randomElement($autos)->id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // VERSLAGEN
+        foreach ($roosterItems as $item) {
+            Verslag::create([
+                'rooster_item_id' => $item->id,
+                'verslag' => $faker->paragraph,
+                'datum_gemaakt' => Carbon::parse($faker->date('Y-m-d', '-1 month'))->format('d/m/y H:i:s'),
+                'datum_aangepast' => Carbon::parse($faker->date('Y-m-d'))->format('d/m/y H:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        // AUTO GEBRUIK
+        foreach ($autos as $auto) {
+            for ($i = 0; $i < $faker->numberBetween(1, 3); $i++) {
+                AutoGebruik::create([
+                    'auto_id' => $auto->id,
+                    'start_gebruik' => $faker->dateTimeBetween('-2 months', '-1 month')->format('d/m/y H:i:s'),
+                    'eind_gebruik' => $faker->dateTimeBetween('-1 month', 'now')->format('d/m/y H:i:s'),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+        }
     }
 }

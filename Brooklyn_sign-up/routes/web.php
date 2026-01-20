@@ -11,6 +11,10 @@ use App\Http\Controllers\ReviewController;
 
 Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 
+Route::get('/review', [ReviewController::class, 'showReviews'])
+    ->middleware(['auth', 'verified'])
+    ->name('review');
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -18,10 +22,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/review', function () {
-    return view('review');
-})->middleware(['auth', 'verified'])->name('review');
 
 Route::get('/overOns', function () {
     return view('overOns');
@@ -40,6 +40,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/api/students', [AgendaController::class, 'getStudents']);
     Route::get('/api/cars', [AgendaController::class, 'getCars']);
 });
+Route::get('/agenda', function () {
+    return view('agenda');
+})->middleware(['auth', 'verified'])->name('agenda');
+
+Route::get('/Beheer', function () {
+    return view('Beheer');
+})->middleware(['auth', 'verified'])->name('Beheer');
+Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
+
+Route::post('/verslag/toevoegen', [AgendaController::class, 'verslagOpslaan'])
+    ->name('verslag.opslaan');
+
+Route::post('/verslag/verwijderen', [AgendaController::class, 'verslagVerwijderen'])
+    ->name('verslag.verwijderen');
+// profiel paths
 
 Route::middleware('auth')->group(function () {
     Route::get('/profiel', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,11 +63,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profiel', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/Beheer', [ReviewController::class, 'beheer'])->name('Beheer');
+    Route::post('/admin/reviews/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
+    Route::post('/admin/reviews/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
+});
+
 // leerling rooster views
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rooster', [RoosterController::class, 'get'])->name('rooster.get');
     Route::get('/rooster/history', [RoosterController::class, 'history'])->name('rooster.history');
+    Route::post('/rooster', [RoosterController::class, 'store'])->name('rooster.store');
+    Route::patch('/rooster', [RoosterController::class, 'update'])->name('rooster.patch');
+    Route::delete('/rooster', [RoosterController::class, 'destroy'])->name('rooster.destroy');
 });
 
 // Wagenpark views
