@@ -80,11 +80,11 @@
                 </div>
 
                 {{-- Modal --}}
-                <div id="agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-                    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[400px] relative">
-                        <button id="agenda-modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+                <div id="agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden p-4">
+                    <div class="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 relative">
+                        <button id="agenda-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl leading-none z-10">&times;</button>
                         
-                        <div id="modal-content">
+                        <div id="modal-content" class="p-6">
                             <!-- Content will be loaded here via AJAX -->
                             <div class="text-center py-4">
                                 <span class="text-gray-500">Laden...</span>

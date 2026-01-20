@@ -25,7 +25,8 @@
         :prev="$prev" 
         :next="$next" 
         :days="$days" 
-        :time-blocks="$timeBlocks" />
+        :time-blocks="$timeBlocks"
+        :selected-user-id="$selectedUserId" />
 @endif
 
 </div>

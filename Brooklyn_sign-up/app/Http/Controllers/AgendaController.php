@@ -37,21 +37,29 @@ class AgendaController extends Controller
             $timeBlocks[] = sprintf('%02d:00', $i);
         }
 
-        // Lessen ophalen voor deze week
-        $weekStart = $startOfWeek->copy()->startOfDay();
-        $weekEnd   = $startOfWeek->copy()->addDays(6)->endOfDay();
+        // Lessen ophalen voor deze week - FIXED VERSION
+        $weekStart = $startOfWeek->copy()->startOfDay()->format('d/m/Y H:i:s');
+        $weekEnd   = $startOfWeek->copy()->addDays(6)->endOfDay()->format('d/m/Y H:i:s');
 
-        $lessen = DB::table('rooster_items')
-            ->where('instructeur_id', $selectedUserId)
-            ->whereBetween('datum_en_tijd', [
-                $weekStart->format('d/m/Y H:i:s'),
-                $weekEnd->format('d/m/Y H:i:s')
-            ])
+        // Get all lessons for this instructor in this week
+        $lessenCollection = RoosterItem::where('instructeur_id', $selectedUserId)
             ->get()
+            ->filter(function($lesson) use ($weekStart, $weekEnd) {
+                // Parse the stored date
+                try {
+                    $lessonDate = Carbon::createFromFormat('d/m/Y H:i:s', $lesson->datum_en_tijd);
+                    $startDate = Carbon::createFromFormat('d/m/Y H:i:s', $weekStart);
+                    $endDate = Carbon::createFromFormat('d/m/Y H:i:s', $weekEnd);
+                    
+                    return $lessonDate->between($startDate, $endDate);
+                } catch (\Exception $e) {
+                    return false;
+                }
+            })
             ->keyBy('datum_en_tijd');
 
         return view('agenda', [
-            'lessen' => $lessen,
+            'lessen' => $lessenCollection,
             'startOfWeek' => $startOfWeek,
             'prev' => $prev,
             'next' => $next,
