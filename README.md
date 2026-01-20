@@ -10,6 +10,18 @@ BrooklynSignup is een moderne webapplicatie voor autorijschool Brooklyn Drive, o
 
 Het doel van dit project is om Brooklyn Drive te voorzien van een gebruiksvriendelijk, efficiënt en schaalbaar platform dat zowel leerlingen, instructeurs en beheerders ondersteunt in hun dagelijkse workflow.
 # Installatie
+
+Vereisten:
+Hier staan de vereisten die je nodig hebt voor het installeren van onze webapplicatie.
+
+Zorg er voor dat je versie 8.4 of hoger van PHP geïnstalleerd hebt.
+Zorg er voor dat je de laatste versie van Laravel geïnstalleerd hebt.
+Zorg er voor dat je de laatste versie van Herd geïnstalleerd hebt.
+Zorg er voor dat je de laatste versie van Composer geïnstalleerd hebt.
+Zorg er voor dat je de laatste versie van NodeJS geïnstalleerd hebt.
+Zorg er voor dat je Visual Studio Code geïnstalleerd hebt.
+Als je deze vereisten hebt voltooid kun je doorgaan met de volgende stappen:
+
 1. Clone de github repository
 ```
 git clone https://github.com/AventusCT/kerntaakexamens-01-2026-team-7-brooklyn-signup
