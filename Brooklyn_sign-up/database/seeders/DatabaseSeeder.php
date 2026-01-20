@@ -24,19 +24,32 @@ class DatabaseSeeder extends Seeder
     {
     $faker = \Faker\Factory::create('nl_NL');
 
-        // AUTOS
-        $autos = [];
-        for ($i = 0; $i < 5; $i++) {
-            $autos[] = Auto::create([
-                'kenteken' => strtoupper($faker->bothify('??-###-?')),
-                'merk' => $faker->company,
-                'type' => $faker->numberBetween(1, 3),
-                'beschikbaar' => $faker->boolean,
-                'foto' => $faker->imageUrl(640, 480, 'cars', true),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-        }
+    // AUTOS
+    $autos = [];
+
+    $cars = [
+        'Volkswagen Golf',
+        'Tesla Model 3',
+        'BMW 3 Series',
+        'Audi A4',
+        'Toyota Corolla',
+        'Mercedes C-Class',
+    ];
+
+    for ($i = 0; $i < 6; $i++) {
+        $carName = $cars[$i];
+        $fileName = strtolower(str_replace([' ', '-'], '_', $carName)) . '.jpg';
+
+        $autos[] = Auto::create([
+            'kenteken' => strtoupper($faker->regexify('[A-Z]{2}-[0-9]{3}-[A-Z]')),
+            'merk' => $carName,
+            'type' => $faker->randomElement([1, 2]), // 1 = automaat, 2 = handgeschakeld
+            'beschikbaar' => $faker->randomElement([1, 1, 1, 1, 2, 3, 4]), // mostly 1
+            'foto' => $fileName,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+    }
 
         // USERS
         $users = [];
@@ -91,8 +104,13 @@ class DatabaseSeeder extends Seeder
 
         // STRIPPENKAART
         for ($i = 0; $i < 5; $i++) {
+            $leerling = $faker->randomElement($users);
+            if ($leerling->type != 1) {
+                $i--;
+                continue;
+            }
             Strippenkaart::create([
-                'leerling_id' => $faker->randomElement($users)->id,
+                'leerling_id' => $i == 1 ? 13 : $leerling->id,
                 'tegoed' => $faker->numberBetween(1, 20),
                 'verval_datum' => Carbon::now()->addMonths($faker->numberBetween(1, 12))->format('d/m/y H:i:s'),
                 'created_at' => Carbon::now(),
@@ -106,7 +124,6 @@ class DatabaseSeeder extends Seeder
                 'leerling_id' => $faker->randomElement($users)->id,
                 'percentage' => $faker->numberBetween(5, 50),
                 'reason' => $faker->sentence,
-                'is_used' => $faker->boolean,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -114,11 +131,17 @@ class DatabaseSeeder extends Seeder
 
         // ROOSTER ITEMS
         $roosterItems = [];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
+            $leerling = $faker->randomElement($users);
+            $instructeur = $faker->randomElement($users);
+            if ($leerling->type !== 1 || $instructeur->type !== 2) {
+                $i--;
+                continue;
+            }
             $roosterItems[] = RoosterItem::create([
-                'leerling_id' => $faker->randomElement($users)->id,
-                'instructeur_id' => $faker->randomElement($users)->id,
-                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/y H:i:s'),
+                'leerling_id' => $i <= 5 ? 13 : $leerling->id,
+                'instructeur_id' => $instructeur->id,
+                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/Y H:i:s'),
                 'auto' => $faker->randomElement($autos)->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

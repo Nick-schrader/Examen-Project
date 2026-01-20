@@ -18,9 +18,19 @@ class StrippenkaartController extends Controller {
     public static function getNext($user_id) {
         return Strippenkaart::where('leerling_id', $user_id)
             ->where('tegoed', '>', 0)
-            ->where('verval_datum', '>=', now())
+            ->where('verval_datum', '<=', now())
             ->orderBy('created_at', 'asc')
-            ->first();
+            ->first() ?? ['status' => 'empty', 'message' => 'niks gevonden'];
+    }
+
+    // Returns all matching strippenkaarten in ascending order
+    public static function getNextAll($user_id) {
+        $result = Strippenkaart::where('leerling_id', $user_id)
+            ->where('tegoed', '>', 0)
+            ->where('verval_datum', '<=', now())
+            ->orderBy('created_at', 'asc')
+            ->get();
+        return $result->isEmpty() ? ['status' => 'empty', 'message' => 'niks gevonden'] : $result;
     }
 
     public function add(Request $request)
@@ -74,7 +84,7 @@ class StrippenkaartController extends Controller {
         StrippenkaartController::allowed($user_id, $kaart_id);
         $strippenkaart = Strippenkaart::find($kaart_id);
 
-        if ($strippenkaart->tegoed - $amount <= 0) return false;
+        if ($strippenkaart->tegoed - $amount < 0) return false;
 
         $strippenkaart->tegoed = $strippenkaart->tegoed - $amount;
         $strippenkaart->save();

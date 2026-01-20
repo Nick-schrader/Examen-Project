@@ -97,7 +97,7 @@ class RoosterController extends Controller
         $user_id = $request->user()->id;
 
         $kaart = SC::getNext($user_id);
-        if (!$kaart || !$kaart->tegoed) {
+        if (!$kaart || is_array($kaart)) {
             abort(400, 'Geen geldige strippenkaart of tegoed gevonden.');
         }
         try {
@@ -113,7 +113,7 @@ class RoosterController extends Controller
             'datum_en_tijd' => $datetime,
             'auto' => $request->auto
         ]);
-        return SC::removeFromTegoed($user_id, $kaart->id) ? redirect('/rooster') : abort(500, 'Strippenkaart verwijderen mislukt.');
+        return SC::removeFromTegoed($user_id, $kaart->id) ? redirect('/rooster') : abort(400, 'Strippenkaart verwijderen mislukt.');
     }
 
     public function update(Request $request) {

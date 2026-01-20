@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('review_flags', function (Blueprint $table) {
+        Schema::create('review_flag', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('review_id');
             $table->text('reason');
@@ -20,6 +20,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('review_flags');
+        Schema::dropIfExists('review_flag');
     }
 };
