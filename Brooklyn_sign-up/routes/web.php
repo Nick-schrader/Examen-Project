@@ -31,11 +31,18 @@ Route::get('/contact', function () {
     return view('contact');
 })->middleware(['auth', 'verified'])->name('contact');
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
+    Route::get('/agenda/lesson-data', [AgendaController::class, 'getLessonData'])->name('agenda.lesson-data');
+    Route::post('/agenda/add-lesson', [AgendaController::class, 'addLesson'])->name('agenda.add-lesson');
+    Route::post('/agenda/assign-timeblock', [AgendaController::class, 'assignTimeBlock'])->name('agenda.assign-timeblock');
+    Route::post('/agenda/delete-timeblock', [AgendaController::class, 'deleteTimeBlock'])->name('agenda.deleteTimeBlock');
+    Route::get('/api/students', [AgendaController::class, 'getStudents']);
+    Route::get('/api/cars', [AgendaController::class, 'getCars']);
+});
 Route::get('/Beheer', function () {
     return view('Beheer');
 })->middleware(['auth', 'verified'])->name('Beheer');
-
-Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
 
 Route::post('/verslag/toevoegen', [AgendaController::class, 'verslagOpslaan'])
     ->name('verslag.opslaan');

@@ -1,3 +1,4 @@
+<!-- This script is needed for the graph  -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <x-app-layout>
@@ -69,33 +70,34 @@
         </button>
     </div>
 
-        <h1 class="text-3xl font-bold mb-6">Totaaloverzicht inzicht</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center w-full">Totaaloverzicht inzicht</h1>
         
         <!-- Graph Section -->
-        <div class="w-full max-w-7xl bg-white rounded-lg shadow-lg p-6">
-            <!-- Time Period Selector -->
-            <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6">
-                <h2 class="text-2xl font-semibold mb-2 sm:mb-0">Gebruik auto's</h2>
-                <div class="flex gap-2">
-                    <button onclick="switchPeriod('week')" id="btn-week" class="px-4 py-2 rounded-md bg-eisgroen text-white font-medium transition-colors">
-                        Week
-                    </button>
-                    <button onclick="switchPeriod('month')" id="btn-month" class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
-                        Maand
-                    </button>
-                    <button onclick="switchPeriod('year')" id="btn-year" class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
-                        Jaar
-                    </button>
+        <div class="w-full px-4">
+            <div class="w-full bg-white rounded-lg shadow-lg p-6">
+                <!-- Time Period Selector -->
+                <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-6">
+                    <h2 class="text-2xl font-semibold mb-2 sm:mb-0">Gebruik auto's</h2>
+                    <div class="flex gap-2">
+                        <button onclick="switchPeriod('week')" id="btn-week" class="px-4 py-2 rounded-md bg-eisgroen text-white font-medium transition-colors">
+                            Week
+                        </button>
+                        <button onclick="switchPeriod('month')" id="btn-month" class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
+                            Maand
+                        </button>
+                        <button onclick="switchPeriod('year')" id="btn-year" class="px-4 py-2 rounded-md bg-gray-200 text-gray-700 font-medium transition-colors">
+                            Jaar
+                        </button>
+                    </div>
+                </div>
+
+                
+                <!-- Graph Container -->
+                <div class="h-80 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
+                    <p class="text-gray-400 text-lg">Geen data beschikbaar</p>
                 </div>
             </div>
-
-            
-            <!-- Graph Container -->
-            <div class="h-80 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
-                <p class="text-gray-400 text-lg">Geen data beschikbaar</p>
-            </div>
         </div>
-    </div>
 
     <!-- Click On Car Modal -->
     <div id="carModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -346,7 +348,3 @@
         });
     </script>
 </x-app-layout>
-
-
-<!-- TODO:
-- Maak de width van het totaaloverzicht gelijk aan het einde van de nieuwe auto button toevoegen -->
