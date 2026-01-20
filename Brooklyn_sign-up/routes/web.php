@@ -23,8 +23,9 @@ Route::get('/', function () {
     return view('home');
 });
 
+// Dashboard is home view for now
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/overOns', function () {
