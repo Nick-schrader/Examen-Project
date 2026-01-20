@@ -1,9 +1,12 @@
+
 @php
 	$leerling = auth()->user();
-	$strippenkaarten = \App\Models\Strippenkaart::where('leerling_id', $leerling->id)->get();
+	$strippenkaarten = \App\Http\Controllers\StrippenkaartController::getNextAll($leerling->id);
 @endphp
 
-@if($strippenkaarten->count())
+@if(is_array($strippenkaarten) && isset($strippenkaarten['status']) && $strippenkaarten['status'] === 'empty')
+	<div class="mb-4 text-red-500">Je hebt geen actieve strippenkaarten.</div>
+@elseif($strippenkaarten->count())
 	<div class="mb-4">
 		<h3 class="mb-2 text-lg font-semibold">Strippenkaarten</h3>
 		<ul class="space-y-1">
