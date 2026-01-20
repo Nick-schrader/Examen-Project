@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('leerling_id');
             $table->integer('percentage');
             $table->text('reason');
-            $table->boolean('is_used');
             $table->foreign('leerling_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
