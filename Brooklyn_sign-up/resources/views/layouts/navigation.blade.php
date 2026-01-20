@@ -16,6 +16,12 @@
                         <x-nav-link :href="'/home'" :active="request()->is('home')">
                             Home
                         </x-nav-link>
+                        <x-nav-link :href="route('review')" :active="request()->routeIs('review')">
+                            Reviews
+                        </x-nav-link>
+                        <x-nav-link :href="route('overOns')" :active="request()->routeIs('overOns')">
+                            Over ons
+                        </x-nav-link>
                         <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                             Contact
                         </x-nav-link>

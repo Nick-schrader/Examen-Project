@@ -12,7 +12,6 @@ use App\Http\Controllers\ReviewController;
 Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 
 Route::get('/review', [ReviewController::class, 'showReviews'])
-    ->middleware(['auth', 'verified'])
     ->name('review');
 
 Route::get('/home', function () {
@@ -30,7 +29,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/overOns', function () {
     return view('overOns');
-})->middleware(['auth', 'verified'])->name('overOns');
+})->name('overOns');
 
 Route::get('/contact', function () {
     return view('contact');
