@@ -22,17 +22,30 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-    $faker = \Faker\Factory::create('nl_NL');
+        $faker = \Faker\Factory::create('nl_NL');
 
         // AUTOS
         $autos = [];
-        for ($i = 0; $i < 5; $i++) {
+
+        $cars = [
+            'Volkswagen Golf',
+            'Tesla Model 3',
+            'BMW 3 Series',
+            'Audi A4',
+            'Toyota Corolla',
+            'Mercedes C-Class',
+        ];
+
+        for ($i = 0; $i < 6; $i++) {
+            $carName = $cars[$i];
+            $fileName = strtolower(str_replace([' ', '-'], '_', $carName)) . '.jpg';
+
             $autos[] = Auto::create([
-                'kenteken' => strtoupper($faker->bothify('??-###-?')),
-                'merk' => $faker->company,
-                'type' => $faker->numberBetween(1, 3),
-                'beschikbaar' => $faker->boolean,
-                'foto' => $faker->imageUrl(640, 480, 'cars', true),
+                'kenteken' => strtoupper($faker->regexify('[A-Z]{2}-[0-9]{3}-[A-Z]')),
+                'merk' => $carName,
+                'type' => $faker->randomElement([1, 2]), // 1 = automaat, 2 = handgeschakeld
+                'beschikbaar' => $faker->randomElement([1, 1, 1, 1, 2, 3, 4]), // mostly 1
+                'foto' => $fileName,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
