@@ -42,7 +42,7 @@ php artisan migrate
 ```
 php artisan db:seed
 ```
-5. Run't de local host server
+6. Run't de local host server
 ```
 Npm run dev
 ```
