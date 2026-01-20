@@ -119,15 +119,15 @@ class DatabaseSeeder extends Seeder
         // ROOSTER ITEMS
         $roosterItems = [];
         for ($i = 0; $i < 20; $i++) {
-            $leerling = $faker->randomElement($users)->id;
-            $instructeur = $faker->randomElement($users)->id;
+            $leerling = $faker->randomElement($users);
+            $instructeur = $faker->randomElement($users);
             if ($leerling->type !== 1 || $instructeur->type !== 2) {
                 $i--;
                 continue;
             }
             $roosterItems[] = RoosterItem::create([
-                'leerling_id' => $faker->randomElement($users)->id,
-                'instructeur_id' => $faker->randomElement($users)->id,
+                'leerling_id' => $leerling->id,
+                'instructeur_id' => $instructeur->id,
                 'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/y H:i:s'),
                 'auto' => $faker->randomElement($autos)->id,
                 'created_at' => Carbon::now(),
