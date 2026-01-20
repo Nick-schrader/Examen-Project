@@ -60,7 +60,7 @@
 
                                     <button type="button"
                                         class="time-block w-full text-center py-3 border-b transition cursor-pointer
-                                            {{ $heeftLes ? 'bg-green-300 hover:bg-green-400' : 'hover:bg-gray-100' }}"
+                                            {{ $heeftLes ? 'bg-eisgroen hover:bg-[#a3b97f]' : 'hover:bg-[#eae3b7]' }}"
                                         data-date="{{ $day->format('Y-m-d') }}"
                                         data-time="{{ $time }}"
                                         data-user-id="{{ $selectedUserId }}">
