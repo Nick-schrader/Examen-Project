@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
-    /**
-     * Sla een nieuwe review op
-     */
+
+    //slaat de reviews op
     public function store(Request $request)
     {
         $request->validate([
@@ -42,9 +41,7 @@ class ReviewController extends Controller
         return back()->with('success', 'Review is opgeslagen');
     }
 
-    /**
-     * Controleer of een tekst scheldwoorden bevat
-     */
+    // Controleer op scheldwoorden (Gebruik het bestand config/badwords.php)
     private function containsBadWords(string $text, array $badWords): array
     {
         $found = [];
@@ -56,9 +53,7 @@ class ReviewController extends Controller
         return $found;
     }
 
-    /**
-     * Haal alle goedgekeurde reviews op met de naam van de gebruiker
-     */
+    // Haal en toon alle goedgekeurde reviews
     public function showReviews()
     {
         $reviews = DB::table('reviews')
@@ -71,9 +66,7 @@ class ReviewController extends Controller
         return view('review', ['reviews' => $reviews]);
     }
 
-    /**
-     * Haal alle reviews voor het beheer, gescheiden in goedgekeurd en geflagd
-     */
+    // haald de review op voor Beheerder om alle reviews te bekijken en te beoordelen
     public function adminReviews()
     {
         $approvedReviews = DB::table('reviews')
@@ -91,7 +84,7 @@ class ReviewController extends Controller
         return view('admin.reviews', compact('approvedReviews', 'flaggedReviews'));
     }
 
-
+    // Beheer functie voor goedkeuren/afkeuren van reviews
     public function beheer()
     {
         // Goedkeurde reviews ophalen
@@ -109,34 +102,35 @@ class ReviewController extends Controller
         ->select('reviews.*', 'users.naam as reviewer_name', 'review_flag.reason')
         ->get();
 
-        // Stuur naar de beheer-view
         return view('Beheer', compact('approvedReviews', 'flaggedReviews'));
     }
 
-public function approve(Request $request)
-{
-    $review = DB::table('reviews')->where('id', $request->review_id)->first();
+    // Functie om een review goed te keuren
+    public function approve(Request $request)
+    {
+        $review = DB::table('reviews')->where('id', $request->review_id)->first();
 
-    DB::table('reviews')
-        ->where('id', $request->review_id)
-        ->update([
-            'status' => 'approved',
-            'updated_at' => now()
+        DB::table('reviews')
+            ->where('id', $request->review_id)
+            ->update([
+                'status' => 'approved',
+                'updated_at' => now()
+            ]);
+
+        DB::table('review_flag')
+            ->where('review_id', $request->review_id)
+            ->delete();
+
+        DB::table('korting')->insert([
+            'leerling_id' => $review->user_id,
+            'percentage'  => 10,
+            'reason'      => 'Goedgekeurde review',
         ]);
 
-    DB::table('review_flag')
-        ->where('review_id', $request->review_id)
-        ->delete();
+        return back()->with('success', 'Review goedgekeurd en korting toegevoegd.');
+    }
 
-    DB::table('korting')->insert([
-        'leerling_id' => $review->user_id,
-        'percentage'  => 10,
-        'reason'      => 'Goedgekeurde review',
-    ]);
-
-    return back()->with('success', 'Review goedgekeurd en korting toegevoegd.');
-}
-
+    // Functie om een review af te keuren
     public function reject(Request $request)
     {
         DB::table('reviews')->where('id', $request->review_id)->delete();
@@ -145,6 +139,7 @@ public function approve(Request $request)
         return back()->with('success', 'Review afgekeurd en verwijderd.');
     }
 
+    // Haal de lesgeschiedenis van de ingelogde gebruiker op
     public function history()
     {
         $lessons = DB::table('rooster_items')
@@ -154,6 +149,7 @@ public function approve(Request $request)
         return view('rooster.index', compact('lessons'));
     }
 
+    // Haal kortingen op voor de gebruiker
     public function getKorting($userId)
     {
         $kortingen = DB::table('korting')
@@ -164,6 +160,7 @@ public function approve(Request $request)
         return response()->json($kortingen);
     }
 
+    // Verwijder de korting nadat deze is toegepast 
     public function removeKorting($id)
     {
         $deleted = DB::table('korting')->where('id', $id)->delete();

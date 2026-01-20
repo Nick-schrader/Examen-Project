@@ -15,12 +15,17 @@ Route::get('/review', [ReviewController::class, 'showReviews'])
     ->middleware(['auth', 'verified'])
     ->name('review');
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/home', function () {
+    return view('home');
 });
 
+Route::get('/', function () {
+    return view('home');
+});
+
+// Dashboard is home view for now
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/overOns', function () {
@@ -29,7 +34,7 @@ Route::get('/overOns', function () {
 
 Route::get('/contact', function () {
     return view('contact');
-})->middleware(['auth', 'verified'])->name('contact');
+})->name('contact');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');

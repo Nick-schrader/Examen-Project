@@ -24,7 +24,7 @@
                          x-show="ratingFilter === '' || ratingFilter == {{ $review->rating }}">
                         <p class="text-gray-900 font-semibold mb-4">{{ $review->reviewer_name }}</p>
 
-                        <!-- Rating -->
+                        <!-- Review rating -->
                         <div class="flex items-center mb-4">
                             <div class="flex space-x-1">
                                 @for($i = 1; $i <= 5; $i++)
@@ -37,8 +37,6 @@
                         </div>
 
                         <p class="text-gray-700 flex-1">{{ $review->comment }}</p>
-
-                        <!-- Verwijderen knop met margin -->
                         <div class="flex space-x-2 mt-4">
                             <form method="POST" action="{{ route('reviews.reject') }}">
                                 @csrf
