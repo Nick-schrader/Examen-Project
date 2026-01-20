@@ -91,9 +91,7 @@ class ReviewController extends Controller
         return view('admin.reviews', compact('approvedReviews', 'flaggedReviews'));
     }
 
-    /**
-     * Nieuwe beheerpagina
-     */
+
     public function beheer()
     {
         // Goedkeurde reviews ophalen
@@ -115,23 +113,30 @@ class ReviewController extends Controller
         return view('Beheer', compact('approvedReviews', 'flaggedReviews'));
     }
 
-    /**
-     * Goedkeur een geflagde review
-     */
-    public function approve(Request $request)
-    {
-        DB::table('reviews')
-            ->where('id', $request->review_id)
-            ->update(['status' => 'approved', 'updated_at' => now()]);
+public function approve(Request $request)
+{
+    $review = DB::table('reviews')->where('id', $request->review_id)->first();
 
-        DB::table('review_flag')->where('review_id', $request->review_id)->delete();
+    DB::table('reviews')
+        ->where('id', $request->review_id)
+        ->update([
+            'status' => 'approved',
+            'updated_at' => now()
+        ]);
 
-        return back()->with('success', 'Review goedgekeurd.');
-    }
+    DB::table('review_flag')
+        ->where('review_id', $request->review_id)
+        ->delete();
 
-    /**
-     * Keur een review af
-     */
+    DB::table('korting')->insert([
+        'leerling_id' => $review->user_id,
+        'percentage'  => 10,
+        'reason'      => 'Goedgekeurde review',
+    ]);
+
+    return back()->with('success', 'Review goedgekeurd en korting toegevoegd.');
+}
+
     public function reject(Request $request)
     {
         DB::table('reviews')->where('id', $request->review_id)->delete();
@@ -140,9 +145,6 @@ class ReviewController extends Controller
         return back()->with('success', 'Review afgekeurd en verwijderd.');
     }
 
-    /**
-     * Toon geschiedenis van rooster items
-     */
     public function history()
     {
         $lessons = DB::table('rooster_items')
@@ -151,4 +153,21 @@ class ReviewController extends Controller
 
         return view('rooster.index', compact('lessons'));
     }
+
+    public function getKorting($userId)
+    {
+        $kortingen = DB::table('korting')
+            ->where('leerling_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($kortingen);
+    }
+
+    public function removeKorting($id)
+    {
+        $deleted = DB::table('korting')->where('id', $id)->delete();
+    }
+
+
 }
