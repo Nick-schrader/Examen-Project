@@ -53,7 +53,7 @@ class AgendaController extends Controller
                 ->format('d/m/Y H:i:s');
 
             $les = DB::table('rooster_items')
-                ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
+                ->leftJoin('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
                 ->leftJoin('auto', 'rooster_items.auto', '=', 'auto.id')
                 ->select(
                     'rooster_items.*',
@@ -268,25 +268,48 @@ class AgendaController extends Controller
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['time'])
             ->format('d/m/Y H:i:s');
 
-        $existing = RoosterItem::where('instructeur_id', $validated['instructeur_id'])
-            ->whereRaw("STR_TO_DATE(datum_en_tijd, '%d/%m/%Y %H:%i:%s') = ?", [$datetime])
+        // Check if already exists
+        $existing = DB::table('rooster_items')
+            ->where('instructeur_id', $validated['instructeur_id'])
+            ->where('datum_en_tijd', $datetime)
             ->first();
 
         if ($existing) {
-            // Update car only
-            $existing->update(['auto' => $validated['auto']]);
-        } else {
-            // Create new time block
-            RoosterItem::create([
-                'instructeur_id' => $validated['instructeur_id'],
-                'auto' => $validated['auto'],
-                'datum_en_tijd' => $datetime
-            ]);
+            return response()->json(['error' => 'Er bestaat al een tijdblok op dit moment'], 400);
         }
+
+        // Create new time block WITHOUT leerling_id
+        DB::table('rooster_items')->insert([
+            'instructeur_id' => $validated['instructeur_id'],
+            'auto' => $validated['auto'],
+            'datum_en_tijd' => $datetime,
+            'leerling_id' => null, // No student assigned yet
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Tijdblok succesvol toegewezen'
+        ]);
+    }
+
+    public function updateTimeBlock(Request $request)
+    {
+        if (auth()->user()->type != 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'rooster_item_id' => 'required|exists:rooster_items,id',
+            'auto' => 'required|exists:auto,id',
+        ]);
+
+        DB::table('rooster_items')
+            ->where('id', $validated['rooster_item_id'])
+            ->update(['auto' => $validated['auto']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tijdblok succesvol bijgewerkt'
         ]);
     }
 
@@ -307,8 +330,8 @@ class AgendaController extends Controller
 
         $deleted = DB::table('rooster_items')
             ->where('instructeur_id', $validated['instructeur_id'])
-            ->whereRaw("STR_TO_DATE(datum_en_tijd, '%d/%m/%Y %H:%i:%s') = ?", [$datetime])
-            ->delete(); // delete regardless of car/student
+            ->where('datum_en_tijd', $datetime)
+            ->delete();
 
         if ($deleted) {
             return response()->json([
@@ -366,5 +389,58 @@ class AgendaController extends Controller
             ->delete();
 
         return redirect()->back()->with('success', 'Verslag verwijderd.');
+    }
+
+    public function getInstructors()
+    {
+        if (auth()->user()->type != 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $instructors = DB::table('users')
+            ->where('type', 2)
+            ->select('id', 'naam')
+            ->get();
+
+        return response()->json(['instructors' => $instructors]);
+    }
+
+    public function updateLesson(Request $request)
+    {
+        if (auth()->user()->type != 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'rooster_item_id' => 'required|exists:rooster_items,id',
+            'leerling_id' => 'required|exists:users,id',
+            'auto' => 'required|exists:auto,id',
+        ]);
+
+        DB::table('rooster_items')
+            ->where('id', $request->rooster_item_id)
+            ->update([
+                'leerling_id' => $request->leerling_id,
+                'auto' => $request->auto,
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Les succesvol bijgewerkt']);
+    }
+
+    public function deleteLesson(Request $request)
+    {
+        if (auth()->user()->type != 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'rooster_item_id' => 'required|exists:rooster_items,id',
+        ]);
+
+        DB::table('rooster_items')
+            ->where('id', $request->rooster_item_id)
+            ->delete();
+
+        return response()->json(['success' => true, 'message' => 'Les succesvol verwijderd']);
     }
 }

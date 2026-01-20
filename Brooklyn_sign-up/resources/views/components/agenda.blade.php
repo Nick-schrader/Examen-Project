@@ -86,7 +86,18 @@
                         </div>
                         {{-- Content --}}
                         <div id="modal-content" class="p-6">
-                            <x-leerlingDataOphalen :les="$les" :verslag="$verslag" />
+                            @if(auth()->user()->type == 3)
+                                <x-addInstructorTimeblock 
+                                    :date="request('date')" 
+                                    :time="request('time')" 
+                                    :userId="$selectedUserId"
+                                    :week="$startOfWeek->isoWeek()"
+                                    :year="$startOfWeek->year"
+                                    :les="$les" />
+                            @else
+                                <x-leerlingDataOphalen :les="$les" :verslag="$verslag" />
+                            @endif
+                        </div>
                         </div>
                     </div>
                 </div>

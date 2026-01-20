@@ -39,11 +39,17 @@ Route::get('/contact', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
     Route::get('/agenda/lesson-data', [AgendaController::class, 'getLessonData'])->name('agenda.lesson-data');
-    Route::post('/agenda/add-lesson', [AgendaController::class, 'addLesson'])->name('agenda.add-lesson');
+    Route::post('/agenda/add-lesson', [AgendaController::class, 'addLesson'])->name('agenda.addLesson');
     Route::post('/agenda/assign-timeblock', [AgendaController::class, 'assignTimeBlock'])->name('agenda.assign-timeblock');
     Route::post('/agenda/delete-timeblock', [AgendaController::class, 'deleteTimeBlock'])->name('agenda.deleteTimeBlock');
     Route::get('/api/students', [AgendaController::class, 'getStudents']);
     Route::get('/api/cars', [AgendaController::class, 'getCars']);
+    Route::get('/api/instructors', [AgendaController::class, 'getInstructors']);
+    Route::post('/agenda/update-lesson', [AgendaController::class, 'updateLesson'])->name('agenda.updateLesson');
+    Route::post('/agenda/delete-lesson', [AgendaController::class, 'deleteLesson'])->name('agenda.deleteLesson');
+    Route::post('/agenda/assign-timeblock', [AgendaController::class, 'assignTimeBlock'])->name('agenda.assignTimeBlock');
+    Route::post('/agenda/update-timeblock', [AgendaController::class, 'updateTimeBlock'])->name('agenda.updateTimeBlock');
+    Route::post('/agenda/delete-timeblock', [AgendaController::class, 'deleteTimeBlock'])->name('agenda.deleteTimeBlock');
 });
 Route::get('/Beheer', function () {
     return view('Beheer');

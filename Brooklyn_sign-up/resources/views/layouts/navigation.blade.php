@@ -107,7 +107,7 @@
                         </x-nav-link>
                         @if(Route::has('register'))
                             <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
-                                Register
+                                Registreren
                             </x-nav-link>
                         @endif
                     </div>
