@@ -5,7 +5,8 @@
     'prev',
     'next',
     'days',
-    'timeBlocks'
+    'timeBlocks',
+    'selectedUserId'
 ])
 
 <div class="flex justify-center w-full mt-6">
@@ -17,22 +18,22 @@
 
                 {{-- Week navigatie --}}
                 <div class="flex flex-col sm:flex-row items-center justify-center bg-eisgeel py-4 border-b gap-2">
-                    <a href="?week={{ $prev->isoWeek() }}&year={{ $prev->year }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&lt;</a>
+                    <a href="?week={{ $prev->isoWeek() }}&year={{ $prev->year }}&user={{ $selectedUserId }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&lt;</a>
                     <span class="mx-6 text-xl font-semibold text-gray-700">
                         Week {{ $startOfWeek->format('W') }}
                         <span class="ml-2 text-sm text-gray-500">
                             ({{ $startOfWeek->format('d M') }} - {{ $startOfWeek->copy()->addDays(5)->format('d M') }})
                         </span>
                     </span>
-                    <a href="?week={{ $next->isoWeek() }}&year={{ $next->year }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&gt;</a>
-                    <a href="?week={{ now()->isoWeek() }}&year={{ now()->year }}" class="ml-4 px-4 py-1 rounded bg-eisgeel text-eisblue font-semibold shadow hover:bg-yellow-300 transition">
+                    <a href="?week={{ $next->isoWeek() }}&year={{ $next->year }}&user={{ $selectedUserId }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&gt;</a>
+                    <a href="?week={{ now()->isoWeek() }}&year={{ now()->year }}&user={{ $selectedUserId }}" class="ml-4 px-4 py-1 rounded bg-eisgeel text-eisblue font-semibold shadow hover:bg-yellow-300 transition">
                         Spring naar deze week
                     </a>
                 </div>
 
                 {{-- Dagen + tijdblokken --}}
                 <div class="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x">
-                    @foreach ($days as $i => $day)
+                    @foreach ($days as $day)
                         <div class="flex-1">
 
                             {{-- Dag header --}}
@@ -46,35 +47,25 @@
                                 @foreach ($timeBlocks as $time)
                                     @php
                                         $startHour = (int) explode(':', $time)[0];
-                                        $endHour = $startHour + 1;
-                                        $endTime = sprintf('%02d:00', $endHour);
+                                        $endTime = sprintf('%02d:00', $startHour + 1);
                                         $blockLabel = ltrim($time, '0') . '-' . ltrim($endTime, '0');
 
-                                        // Datum + tijd in hetzelfde formaat als in DB
-                                        $datetimeCheck = Carbon\Carbon::createFromFormat('Y-m-d H:i', $day->format('Y-m-d') . ' ' . $time)
-                                            ->format('d/m/Y H:i:s');
-                                                                
-                                        // Check of er een les is
+                                        $datetimeCheck = \Carbon\Carbon::createFromFormat(
+                                            'Y-m-d H:i',
+                                            $day->format('Y-m-d') . ' ' . $time
+                                        )->format('d/m/Y H:i:s');
+
                                         $heeftLes = $lessen->contains('datum_en_tijd', $datetimeCheck);
                                     @endphp
 
-                                    <form method="GET">
-                                        <input type="hidden" name="week" value="{{ $startOfWeek->isoWeek() }}">
-                                        <input type="hidden" name="year" value="{{ $startOfWeek->year }}">
-                                        <input type="hidden" name="date" value="{{ $day->format('Y-m-d') }}">
-                                        <input type="hidden" name="time" value="{{ $time }}">
-                                        <input type="hidden" name="modal" value="les">
-                                        <button type="submit"
-                                            class="time-block w-full text-center py-3 border-b transition cursor-pointer
-                                                {{ $heeftLes ? 'bg-green-300 hover:bg-green-400' : 'hover:bg-gray-100' }}"
-                                            data-date="{{ $day->format('Y-m-d') }}"
-                                            data-time="{{ $time }}"
-                                            data-user-id="{{ $selectedUserId }}">
-                                            {{ $blockLabel }}
-                                        </button>
-
-                                    </form>
-
+                                    <button type="button"
+                                        class="time-block w-full text-center py-3 border-b transition cursor-pointer
+                                            {{ $heeftLes ? 'bg-green-300 hover:bg-green-400' : 'hover:bg-gray-100' }}"
+                                        data-date="{{ $day->format('Y-m-d') }}"
+                                        data-time="{{ $time }}"
+                                        data-user-id="{{ $selectedUserId }}">
+                                        {{ $blockLabel }}
+                                    </button>
                                 @endforeach
                             </div>
 
@@ -84,13 +75,16 @@
 
                 {{-- Modal --}}
                 <div id="agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-                    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[300px] relative">
+                    <div class="bg-white rounded-lg shadow-lg p-6 min-w-[300px] max-w-2xl relative">
                         <button id="agenda-modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
-
-                        <x-leerlingDataOphalen :les="$les" />
+                        <div id="modal-content">
+                            <!-- Content dynamically loaded by JavaScript -->
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+</div>
 </div>

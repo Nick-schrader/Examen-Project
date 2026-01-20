@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const isAdmin = userType == 3;
 
     document.addEventListener('click', function (e) {
-    const block = e.target.closest('.time-block');
-    if (!block) return;
+        const block = e.target.closest('.time-block');
+        if (!block) return;
 
         const date = block.dataset.date;
         const time = block.dataset.time;
@@ -38,17 +38,56 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderModalContent(data, date, time, userId) {
         if (data.hasLesson) {
             if (!isAdmin) {
+                // Instructor view - show lesson details with link to verslag
+                const les = data.les;
+                const autoName = les.auto_merk ? `${les.auto_merk} (${les.kenteken})` : 'Nog niet toegewezen';
+                const leerlingNaam = les.leerling_naam || 'Nog niet toegewezen';
+                
                 modalContent.innerHTML = `
-                    <h2 class="text-lg font-bold mb-4">Les Details</h2>
-                    <div class="flex flex-col gap-2">
-                        <div><strong>Datum en Tijd:</strong> ${data.les.datum_en_tijd}</div>
-                        <div><strong>Auto:</strong> ${data.les.auto_name || 'Nog niet toegewezen'}</div>
-                        <div><strong>Leerling:</strong> ${data.les.leerling || 'Nog niet toegewezen'}</div>
+                    <div class="pt-4 flex flex-col gap-3 text-eisblue">
+                        <div class="bg-eisgeel rounded-lg p-4 shadow-sm border border-eisgroen/30">
+                            <h2 class="text-lg font-semibold text-eisblue mb-3">Lesinformatie</h2>
+                            
+                            <div class="flex flex-col gap-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="font-semibold text-eisblue">Leerling:</span>
+                                    <span>${leerlingNaam}</span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span class="font-semibold text-eisblue">Adres:</span>
+                                    <span>${les.adres || '-'}</span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span class="font-semibold text-eisblue">Telefoon:</span>
+                                    <span>${les.telefoon || '-'}</span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span class="font-semibold text-eisblue">Auto:</span>
+                                    <span>${autoName}</span>
+                                </div>
+                                
+                                <div class="flex justify-between">
+                                    <span class="font-semibold text-eisblue">Datum:</span>
+                                    <span>${les.datum_en_tijd}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center mt-6 bg-eisgroen text-white rounded-md p-4 shadow-md hover:bg-[#a3b97f] cursor-pointer">
+                            <a href="?modal=verslag&les_id=${les.id}&week=${new URLSearchParams(window.location.search).get('week') || ''}&year=${new URLSearchParams(window.location.search).get('year') || ''}"
+                               class="block w-full text-center">
+                                Verslag bekijken/toevoegen
+                            </a>
+                        </div>
                     </div>
                 `;
                 return;
             }
 
+            // Admin view - show edit options
             modalContent.innerHTML = `
                 <h2 class="text-lg font-bold mb-4">Tijdblok</h2>
                 <div class="flex flex-col gap-3">
