@@ -88,6 +88,7 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!--Als je al een account hebt kan je hier op drukken om naar inlog pagina te gaan-->
         <div class="flex items-center justify-end mt-4">
             <a class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Al geregistreerd?') }}
