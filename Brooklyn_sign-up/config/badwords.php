@@ -2,6 +2,7 @@
 
 return [
 
+    // Lijst van ongewenste woorden voor het filteren van reviews
     'words' => [
 
     'klootzak','idioot','tering','hoer','lul','sukkel','mongool',

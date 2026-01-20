@@ -4,6 +4,7 @@
 
     @if($les)
 
+        {{-- Adres splitsen in straat en huisnummer --}}
         @php
             $parts = explode(' -=- ', $les->adres);
             $straat = $parts[0] ?? '';
@@ -15,41 +16,49 @@
 
             <div class="flex flex-col gap-2 text-sm">
 
+                {{-- Leerling naam --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Leerling:</span>
                     <span>{{ $les->leerling_naam }}</span>
                 </div>
 
+                {{-- Straatnaam --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Straatnaam:</span>
                     <span>{{ $straat }}</span>
                 </div>
 
+                {{-- Huisnummer --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Huisnummer:</span>
                     <span>{{ $huisnummer }}</span>
                 </div>
 
+                {{-- Telefoon --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Telefoon:</span>
                     <span>{{ $les->telefoon }}</span>
                 </div>
 
+                {{-- Auto --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Auto:</span>
                     <span>{{ $les->auto_merk }}</span>
                 </div>
 
+                {{-- Kenteken --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Kenteken:</span>
                     <span>{{ $les->kenteken }}</span>
                 </div>
 
+                {{-- Datum --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Datum:</span>
                     <span>{{ $les->datum }}</span>
                 </div>
 
+                {{-- Tijd --}}
                 <div class="flex justify-between">
                     <span class="font-semibold text-eisblue">Tijd:</span>
                     <span>{{ $les->tijd }}</span>
@@ -58,6 +67,7 @@
             </div>
         </div>
 
+        {{-- Verslag toevoegen/bijwerken knop --}}
         <div class="flex justify-center mt-6 bg-eisgroen text-white rounded-md p-4 shadow-md hover:bg-[#a3b97f] cursor-pointer">
             <a href="?modal=verslag&les_id={{ $les->id }}&week={{ request('week') }}&year={{ request('year') }}"
                class="block w-full text-center">
@@ -67,6 +77,7 @@
 
     @else
 
+        {{-- Geen les ingepland bericht --}}
         <div class="bg-red-50 text-red-700 border border-red-200 rounded-lg p-4 text-sm shadow-sm">
             Geen les ingepland op dit tijdstip.
         </div>
@@ -74,4 +85,3 @@
     @endif
 
 </div>
-

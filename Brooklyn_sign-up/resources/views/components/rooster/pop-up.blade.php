@@ -54,6 +54,7 @@
                     </div>
                 @endif
             </div>
+            <!--Review button-->
             @if($history)
                 <x-Review-button :lesson="$lesson" :history="$history" />
             @endif

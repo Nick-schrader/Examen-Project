@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('hidden');
     });
 
-    // ⭐ Open modal als ?modal=verslagen in URL staat
+    //  Open modal als ?modal=verslagen in URL staat
     const params = new URLSearchParams(window.location.search);
     if (params.get('modal') === 'verslagen') {
         modal.classList.remove('hidden');
 
-        // ⭐ Verwijder modal=verslagen zodat refresh hem NIET opnieuw opent
+        //  Verwijder modal=verslagen zodat refresh hem NIET opnieuw opent
         params.delete('modal');
         const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
         window.history.replaceState({}, '', newUrl);

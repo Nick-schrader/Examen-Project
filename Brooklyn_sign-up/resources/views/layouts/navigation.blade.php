@@ -1,16 +1,16 @@
 <nav x-data="{ open: false }" class="border-b border-gray-100 bg-eisblue">
-    <!-- Primary Navigation Menu -->
+    {{-- Website navigatie header --}}
     <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- Logo -->
+                {{-- Logo --}}
                 <div class="flex items-center shrink-0">
                     <a href="{{ Auth::check() ? route('dashboard') : '/home' }}">
                         <x-application-logo class="block w-auto text-gray-800 fill-current h-9" />
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                {{-- Navigatie links --}}
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     @guest
                         <x-nav-link :href="'/home'" :active="request()->is('home')">
