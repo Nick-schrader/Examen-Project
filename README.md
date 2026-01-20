@@ -22,7 +22,14 @@ npm install
 ```
 composer install
 ```
-
+4. Creeër de database
+```
+php artisan migrate
+```
+5. Voeg data aan de database toe
+```
+php artisan db:seed
+```
 # Auteurs
 * Julian Huis in 't Veld
 * Dion Gierman
