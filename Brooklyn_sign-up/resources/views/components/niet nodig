@@ -7,11 +7,11 @@
     'next',
     'days',
     'timeBlocks',
-    'selectedUserId'
+    'selectedUserId',
+    'targetUserId',
 ])
-
 <div class="flex justify-center w-full mt-6">
-<div class="w-full max-w-6xl bg-eisgeel rounded-2xl overflow-hidden shadow-2xl">
+<div class="w-full max-w-6xl overflow-hidden shadow-2xl bg-eisgeel rounded-2xl">
     <div class="flex">
         <div class="flex flex-1 flex-col md:flex-row">
 
@@ -19,7 +19,7 @@
 
                 {{-- Week navigatie --}}
                 <div class="flex flex-col sm:flex-row items-center justify-center bg-eisgeel py-4 border-b gap-2">
-                    <a href="?week={{ $prev->isoWeek() }}&year={{ $prev->year }}&user={{ $selectedUserId }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&lt;</a>
+                    <a href="?week={{ $prev->isoWeek() }}&year={{ $prev->year }}" class="px-4 py-1 text-2xl font-bold text-eisblue hover:text-eisgroen">&lt;</a>
                     <span class="mx-6 text-xl font-semibold text-gray-700">
                         Week {{ $startOfWeek->format('W') }}
                         <span class="ml-2 text-sm text-gray-500">
@@ -34,7 +34,7 @@
 
                 {{-- Dagen + tijdblokken --}}
                 <div class="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x">
-                    @foreach ($days as $day)
+                    @foreach ($days as $i => $day)
                         <div class="flex-1">
 
                             {{-- Dag header --}}
@@ -48,27 +48,36 @@
                                 @foreach ($timeBlocks as $time)
                                     @php
                                         $startHour = (int) explode(':', $time)[0];
-                                        $endTime = sprintf('%02d:00', $startHour + 1);
+                                        $endHour = $startHour + 1;
+                                        $endTime = sprintf('%02d:00', $endHour);
                                         $blockLabel = ltrim($time, '0') . '-' . ltrim($endTime, '0');
 
-                                        $datetimeCheck = \Carbon\Carbon::createFromFormat(
-                                            'Y-m-d H:i',
-                                            $day->format('Y-m-d') . ' ' . $time
-                                        )->format('d/m/Y H:i:s');
+                                        // Datum + tijd in hetzelfde formaat als in DB
+                                        $datetimeCheck = Carbon\Carbon::createFromFormat('Y-m-d H:i', $day->format('Y-m-d') . ' ' . $time)
+                                            ->format('d/m/Y H:i:s');
+                                                                    
+                                        $gevondenLes = $lessen->first(function ($les) use ($datetimeCheck) {
+                                            return trim($les->datum_en_tijd) === $datetimeCheck;
+                                        });
 
-                                        $heeftLes = $lessen->contains('datum_en_tijd', $datetimeCheck);
+
                                     @endphp
 
-                                    <button type="button"
-                                        class="time-block w-full text-center py-3 border-b transition cursor-pointer
-                                            {{ $heeftLes ? 'bg-eisgroen hover:bg-[#a3b97f]' : 'hover:bg-[#eae3b7]' }}"
-                                        data-date="{{ $day->format('Y-m-d') }}"
-                                        data-time="{{ $time }}"
-                                        data-user-id="{{ $selectedUserId }}"
-                                        data-week="{{ $startOfWeek->isoWeek() }}"
-                                        data-year="{{ $startOfWeek->year }}">
-                                        {{ $blockLabel }}
-                                    </button>
+                                    <form method="GET">
+                                        <input type="hidden" name="week" value="{{ $startOfWeek->isoWeek() }}">
+                                        <input type="hidden" name="year" value="{{ $startOfWeek->year }}">
+                                        <input type="hidden" name="date" value="{{ $day->format('Y-m-d') }}">
+                                        <input type="hidden" name="time" value="{{ $time }}">
+                                        <input type="hidden" name="modal" value="les">
+                                        <input type="hidden" name="user" value="{{ $selectedUserId }}">
+                                        <button type="submit"
+                                            class="w-full text-center py-3 border-b transition cursor-pointer
+                                                   {{ $gevondenLes ? 'bg-eisgroen hover:bg-[#a3b97f]' : 'hover:bg-gray-100' }}">
+                                            {{ $blockLabel }}
+                                        </button>
+
+                                    </form>
+
                                 @endforeach
                             </div>
 
@@ -79,22 +88,23 @@
                 {{-- Modal --}}
                 <div id="agenda-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
                     <div class="bg-white rounded-lg shadow-lg min-w-[300px] w-full max-w-md overflow-hidden ml-[20px] mr-[20px]">
+                    
                         {{-- Header --}}
                         <div class="bg-eisblue text-white px-4 py-3 flex items-center justify-between">
                             <x-application-logo class="block w-auto text-gray-800 fill-current h-9" />
                             <button id="agenda-modal-close" class="text-white hover:text-red-500 text-3xl leading-none">&times;</button>
                         </div>
+                    
                         {{-- Content --}}
-                        <div id="modal-content" class="p-6">
+                        <div class="p-6">
                             <x-leerlingDataOphalen :les="$les" :verslag="$verslag" />
                         </div>
+
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 </div>
 
 {{-- Verslag modal --}}

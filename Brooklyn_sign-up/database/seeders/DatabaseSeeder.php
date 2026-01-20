@@ -63,10 +63,10 @@ class DatabaseSeeder extends Seeder
 
         // Add 4 extra users with specific names, types, and a given hashed password
         $extraUsers = [
-            ['naam' => 'admin', 'type' => 3],
-            ['naam' => 'instructeir', 'type' => 2],
-            ['naam' => 'leerling', 'type' => 1],
-            ['naam' => 'guest', 'type' => 0],
+            ['naam' => 'admin', 'type' => 3, 'email' => 'admin@example.com'],
+            ['naam' => 'instructeur', 'type' => 2, 'email' => 'instructeur@example.com'],
+            ['naam' => 'leerling', 'type' => 1, 'email' => 'leerling@example.com'],
+            ['naam' => 'guest', 'type' => 0, 'email' => 'guest@example.com'],
         ];
         foreach ($extraUsers as $extra) {
             $straat = $faker->streetName;
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             $adres = "ergensweg $straat -=- $huisnummer -=- $postcode -=- ergensstad $stad";
             $users[] = User::create([
                 'naam' => $extra['naam'],
-                'email' => $faker->unique()->safeEmail,
+                'email' => $extra['email'],
                 'password' => '$2y$12$DD/1nEiqpUa3kyw1jlqypu9Z.BEzJo.5RKJnxDoFFwBVqkGY/Ie/y',
                 'telefoon' => $faker->phoneNumber,
                 'type' => $extra['type'],

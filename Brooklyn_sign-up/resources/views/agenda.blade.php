@@ -15,7 +15,22 @@
         </div>
     </div>
 
-    <x-agenda :les="$les" :verslag="$verslag" :lessen="$lessen" :start-of-week="$startOfWeek" :prev="$prev" :next="$next" :days="$days" :time-blocks="$timeBlocks" />
+@if(Auth::user()->type == 3 && !request('user'))
+    <div class="mt-10 text-gray-500 text-lg text-center">
+        Selecteer eerst een instructeur om de bijbehorende agenda te bekijken.
+    </div>
+@else
+    <x-agenda 
+        :lessen="$lessen" 
+        :start-of-week="$startOfWeek" 
+        :prev="$prev" 
+        :next="$next" 
+        :days="$days" 
+        :time-blocks="$timeBlocks"
+        :selected-user-id="$selectedUserId"
+        :verslag="$verslag"
+        :les="$les" />
+@endif
 
 </div>
 </x-app-layout>
