@@ -166,9 +166,10 @@ class AgendaController extends Controller
             return response()->json(['error' => 'Missing parameters'], 400);
         }
 
-        $selectedUserId = auth()->user()->type == 3 
-            ? $request->input('user_id', auth()->id()) 
+        $selectedUserId = auth()->user()->type == 3
+            ? $request->input('user_id')
             : auth()->id();
+
 
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $request->date . ' ' . $request->time)
             ->format('d/m/Y H:i:s');
