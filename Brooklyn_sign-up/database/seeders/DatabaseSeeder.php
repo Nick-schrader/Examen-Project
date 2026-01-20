@@ -126,9 +126,9 @@ class DatabaseSeeder extends Seeder
                 continue;
             }
             $roosterItems[] = RoosterItem::create([
-                'leerling_id' => $leerling->id,
+                'leerling_id' => $i <= 5 ? 13 : $leerling->id,
                 'instructeur_id' => $instructeur->id,
-                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/y H:i:s'),
+                'datum_en_tijd' => $faker->dateTimeBetween('-1 month', '+1 month')->format('d/m/Y H:i:s'),
                 'auto' => $faker->randomElement($autos)->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
