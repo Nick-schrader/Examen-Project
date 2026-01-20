@@ -1,11 +1,11 @@
 @props(['selectedUserId' => null, 'modal' => null])
 
+{{-- Gebruiker selecteren --}}
 @php
     $label = auth()->user()->type === 3
         ? 'een instructeur'
         : 'een leerling';
 
-    // Geen fallback naar auth()->id()
     $currentUser = request('user');
 @endphp
 
@@ -18,19 +18,22 @@
             <input type="hidden" name="modal" value="{{ $modal }}">
         @endif
 
+        {{-- Gebruiker selecteren --}}
         <label for="user" class="mb-2 font-semibold text-eisblue">
             Kies {{ $label }}:
         </label>
 
+        {{-- Select dropdown voor gebruikers --}}
         <select name="user" id="user"
                 class="px-4 py-2 rounded shadow w-72 text-eisblue"
                 onchange="this.form.submit()">
 
-            {{-- ⭐ Lege optie --}}
+            {{-- Lege selecteer optie --}}
             <option value="" disabled {{ $currentUser ? '' : 'selected' }}>
                 Selecteer {{ $label }}
             </option>
 
+            {{-- Opties voor elke gebruiker --}}
             @foreach($users as $user)
                 <option value="{{ $user->id }}" {{ $currentUser == $user->id ? 'selected' : '' }}>
                     {{ $user->naam }}

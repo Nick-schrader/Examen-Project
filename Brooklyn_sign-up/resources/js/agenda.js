@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // --- Agenda modal openen op basis van URL ---
+    // Agenda modal openen op basis van URL
     if (params.get('modal') === 'les' && agendaModal) {
         agendaModal.classList.remove('hidden');
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Verslag modal openen op basis van URL ---
+    // Verslag modal openen op basis van URL
     if (params.get('modal') === 'verslag' && verslagModal) {
         verslagModal.classList.remove('hidden');
         params.delete('modal');
