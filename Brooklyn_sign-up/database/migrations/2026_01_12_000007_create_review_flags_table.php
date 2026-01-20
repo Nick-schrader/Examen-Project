@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('review_id');
             $table->text('reason');
             $table->foreign('review_id')->references('id')->on('reviews')->cascadeOnDelete();
-            $table->timestamps();
         });
     }
 

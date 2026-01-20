@@ -95,5 +95,10 @@ Route::post('/autos/upload-image', [AutoController::class, 'uploadCarImage'])->n
 Route::get('/autos/debug-usage', [AutoController::class, 'debugUsageData']);
 Route::post('/strippenkaart/add', [StrippenkaartController::class, 'add'])->name('strippenkaart.add');
 
+Route::get('/korting/{userId}', [ReviewController::class, 'getKorting'])
+    ->name('korting.get')
+    ->middleware('auth');
+Route::delete('/korting/{id}', [ReviewController::class, 'removeKorting']);
+
 
 require __DIR__.'/auth.php';

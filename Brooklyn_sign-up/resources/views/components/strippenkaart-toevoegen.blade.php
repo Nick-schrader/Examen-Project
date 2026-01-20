@@ -30,6 +30,11 @@
                 <!-- User selector -->
                 <x-user-selector :selected-user-id="$targetUserId" modal="strippenkaart" />
 
+                <!-- Korting ophalen component -->
+                <div class="mb-6 w-full">
+                    <x-Kortingophalen :selected-user-id="$targetUserId" modal="strippenkaart" />
+                </div>
+
                 <!-- LessenAantal -->
                 <div class="w-full flex justify-center mb-6">
                     <x-lessenAantal :selected-user-id="$targetUserId" />
