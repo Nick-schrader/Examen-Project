@@ -4,13 +4,13 @@
 
 <div class="flex items-center justify-center">
 
-    <!-- Open button -->
+    {{-- Knop om verslagen overzicht te openen --}}
     <button id="open-verslagen"
         class="w-[240px] h-10 bg-eisgeel rounded-md text-lg font-bold text-center flex items-center justify-center hover:bg-yellow-400 cursor-pointer">
         Verslagen bekijken
     </button>
 
-    <!-- Modal -->
+    {{-- Modal --}}
     <div id="verslagen-modal"
          class="fixed inset-0 bg-black bg-opacity-40 hidden z-50 flex items-center justify-center">
 
@@ -24,16 +24,19 @@
             {{-- Content --}}
             <div class="p-8 flex flex-col items-center max-h-[70vh] overflow-y-auto">
 
-                <!-- Title -->
+                {{-- Titel --}}
                 <h2 class="text-2xl font-bold mb-6 text-center text-eisblue">Verslagen overzicht</h2>
+                {{-- Gebruiker selecteren --}}
                 <x-user-selector :selected-user-id="$targetUserId" modal="verslagen" />
-                <!-- LessenAantal -->
+                {{-- LessenAantal --}}
                 <div class="w-full flex justify-center">
                     <x-lessenAantal :selected-user-id="$targetUserId" />
                 </div>
                 <div class="p-6 w-full">
                 
+                    {{-- Overzicht van alle verslagen voor de geselecteerde gebruiker --}}
                     @if($alleVerslagen->isEmpty())
+                        {{-- Geen verslagen gevonden bericht --}}
                         <p class="text-gray-500 text-center">Geen verslagen gevonden voor deze leerling.</p>
                     @else
                         <div class="flex flex-col gap-4">
@@ -50,11 +53,13 @@
                                     <button type="submit" class="w-full text-left">
                                         <div class="border border-eisgroen/30 rounded-lg p-4 shadow-sm bg-eisgeel hover:bg-yellow-200 transition">
                                             
+                                            {{-- Datum van de les --}}
                                             <div class="flex justify-between">
                                                 <span class="font-semibold text-eisblue">Datum les:</span>
                                                 <span>{{ $v->datum_en_tijd }}</span>
                                             </div>
                                         
+                                            {{-- Alleen eerste regel van het verslag --}}
                                             <div class="mt-2">
                                                 <span class="font-semibold text-eisblue">Verslag:</span>
                                                 <p class="mt-1 text-gray-700 whitespace-pre-line">

@@ -9,30 +9,37 @@ use App\Models\RoosterItem;
 
 class AgendaController extends Controller
 {
+    // Toont de agenda pagina
     public function index(Request $request)
     {
+        // Bepaal welke gebruiker geselecteerd is
         $selectedUserId = auth()->user()->type == 3
             ? $request->input('user', auth()->id())
             : auth()->id();
 
+        // Bepaal de week en jaar
         $week = $request->input('week', now()->isoWeek());
         $year = $request->input('year', now()->year);
 
+        // Bepaal de start van de week
         $startOfWeek = now()->setISODate($year, $week)->startOfWeek();
         $prev = $startOfWeek->copy()->subWeek();
         $next = $startOfWeek->copy()->addWeek();
 
+        // Maak een collectie van de dagen in de week
         $days = collect(range(0, 5))->map(fn ($i) => $startOfWeek->copy()->addDays($i));
 
+        // Maak tijdsblokken van 08:00 tot 20:00
         $timeBlocks = [];
         for ($i = 8; $i <= 16; $i++) {
             $timeBlocks[] = sprintf('%02d:00', $i);
         }
 
-        // ---- LESDATA (single source of truth) ----
+        // Haal alle lessen op voor de geselecteerde gebruiker in de week
         $weekStart = $startOfWeek->copy()->startOfDay();
         $weekEnd = $startOfWeek->copy()->addDays(6)->endOfDay();
 
+        // Filter lessen binnen de week
         $lessen = RoosterItem::where('instructeur_id', $selectedUserId)
             ->get()
             ->filter(function ($les) use ($weekStart, $weekEnd) {
@@ -45,13 +52,15 @@ class AgendaController extends Controller
             })
             ->values();
 
-        // ---- MODAL LES ----
+        // Bepaal de geselecteerde les op basis van datum/tijd of les_id
         $les = null;
 
+        // Zoek les op basis van datum en tijd
         if ($request->filled(['date', 'time'])) {
             $datetime = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->date . ' ' . $request->time)
                 ->format('d/m/Y H:i:s');
 
+            // Zoek de les
             $les = DB::table('rooster_items')
                 ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
                 ->leftJoin('auto', 'rooster_items.auto', '=', 'auto.id')
@@ -68,6 +77,7 @@ class AgendaController extends Controller
                 ->first();
         }
 
+        // Zoek les op basis van les_id
         if ($request->filled('les_id')) {
             $les = DB::table('rooster_items')
                 ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
@@ -85,12 +95,14 @@ class AgendaController extends Controller
                 ->first();
         }
 
+        // Format datum en tijd van de les
         if ($les) {
             $carbon = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $les->datum_en_tijd);
             $les->datum = $carbon->format('d-m-Y');
             $les->tijd = $carbon->format('H:i');
         }
 
+        // Haal het verslag op voor de les
         $verslag = null;
         if ($les) {
             $verslag = DB::table('verslag')
@@ -98,17 +110,20 @@ class AgendaController extends Controller
                 ->first();
         }
 
+        // Haal alle verslagen op voor de instructeur, eventueel gefilterd op leerling
         $targetUserId = $request->input('user');
 
+        // Alle verslagen initialiseren
         $alleVerslagen = collect();
 
+        // Als er een specifieke leerling is geselecteerd, filter dan daarop
         if ($targetUserId) {
             $alleVerslagen = DB::table('verslag')
                 ->join('rooster_items', 'verslag.rooster_item_id', '=', 'rooster_items.id')
                 ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
                 ->select('verslag.*', 'rooster_items.datum_en_tijd', 'leerling.naam as leerling_naam')
                 ->where('rooster_items.instructeur_id', auth()->id())
-                ->where('rooster_items.leerling_id', $targetUserId) // ⭐ filter op leerling
+                ->where('rooster_items.leerling_id', $targetUserId)
                 ->orderBy('verslag.created_at', 'desc')
                 ->get();
         }
@@ -126,34 +141,26 @@ class AgendaController extends Controller
             'targetUserId' => $targetUserId,
             'selectedUserId' => $selectedUserId,
         ]);
-
-
-        // return view('agenda', compact(
-        //     'lessen',
-        //     'les',
-        //     'verslag',
-        //     'startOfWeek',
-        //     'prev',
-        //     'next',
-        //     'days',
-        //     'timeBlocks',
-        //     'selectedUserId'
-        // ));
     }
 
+    // Haal lesgegevens op voor een specifieke datum en tijd
     public function getLessonData(Request $request)
     {
+        // Controleer of de vereiste parameters aanwezig zijn
         if (!$request->filled(['date', 'time'])) {
             return response()->json(['error' => 'Missing parameters'], 400);
         }
 
+        // Bepaal de geselecteerde gebruiker
         $selectedUserId = auth()->user()->type == 3
             ? $request->input('user_id')
             : auth()->id();
 
+        // Format de datum en tijd
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $request->date . ' ' . $request->time)
             ->format('d/m/Y H:i:s');
 
+        // Zoek de les in de database
         $les = DB::table('rooster_items')
             ->leftJoin('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
             ->leftJoin('auto', 'rooster_items.auto', '=', 'auto.id')
@@ -169,6 +176,7 @@ class AgendaController extends Controller
             ->where('rooster_items.datum_en_tijd', $datetime)
             ->first();
 
+        // Return de lesgegevens als JSON
         if ($les) {
             return response()->json([
                 'success' => true,
@@ -187,13 +195,15 @@ class AgendaController extends Controller
 
     }
 
+    // Voeg een nieuwe les toe
     public function addLesson(Request $request)
     {
-        // Only admins can add lessons
+        // Controleer of de gebruiker een instructeur is
         if (auth()->user()->type != 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Valideer de request data
         $request->validate([
             'instructeur_id' => 'required|exists:users,id',
             'leerling_id' => 'required|exists:users,id',
@@ -202,19 +212,22 @@ class AgendaController extends Controller
             'time' => 'required|date_format:H:i',
         ]);
 
+        // Format de datum en tijd
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $request->date . ' ' . $request->time)
             ->format('d/m/Y H:i:s');
 
-        // Check if lesson already exists
+        // Controleer of er al een les bestaat op dat tijdstip voor de instructeur
         $existing = DB::table('rooster_items')
             ->where('instructeur_id', $request->instructeur_id)
             ->whereRaw("STR_TO_DATE(datum_en_tijd, '%d/%m/%Y %H:%i:%s') = ?", [$datetime])
             ->exists();
 
+        // Als er al een les is, return een foutmelding
         if ($existing) {
             return response()->json(['error' => 'Er bestaat al een les op dit tijdstip'], 400);
         }
 
+        // Voeg de nieuwe les toe aan de database
         DB::table('rooster_items')->insert([
             'instructeur_id' => $request->instructeur_id,
             'leerling_id' => $request->leerling_id,
@@ -225,12 +238,15 @@ class AgendaController extends Controller
         return response()->json(['success' => true, 'message' => 'Les succesvol toegevoegd']);
     }
 
+    // Haal alle studenten op
     public function getStudents()
     {
+        // Controleer of de gebruiker een instructeur is
         if (auth()->user()->type != 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Haal alle studenten op uit de database
         $students = DB::table('users')
             ->where('type', 1)
             ->select('id', 'naam')
@@ -239,12 +255,15 @@ class AgendaController extends Controller
         return response()->json(['students' => $students]);
     }
 
+    // Haal alle auto's op
     public function getCars()
     {
+        // Controleer of de gebruiker een instructeur is
         if (auth()->user()->type != 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Haal alle auto's op uit de database
         $cars = DB::table('auto')
             ->select('id', 'merk', 'kenteken')
             ->get();
@@ -252,12 +271,15 @@ class AgendaController extends Controller
         return response()->json(['cars' => $cars]);
     }
 
+    // Wijs een tijdblok toe aan een instructeur
     public function assignTimeBlock(Request $request)
     {
+        // Controleer of de gebruiker een instructeur is
         if (auth()->user()->type != 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Valideer de request data
         $validated = $request->validate([
             'instructeur_id' => 'required|exists:users,id',
             'date' => 'required|date_format:Y-m-d',
@@ -265,18 +287,19 @@ class AgendaController extends Controller
             'auto' => 'required|exists:auto,id',
         ]);
 
+        // Format de datum en tijd
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['time'])
             ->format('d/m/Y H:i:s');
 
+        // Controleer of er al een tijdblok bestaat voor de instructeur op dat tijdstip
         $existing = RoosterItem::where('instructeur_id', $validated['instructeur_id'])
             ->whereRaw("STR_TO_DATE(datum_en_tijd, '%d/%m/%Y %H:%i:%s') = ?", [$datetime])
             ->first();
 
+        // Als er al een tijdblok is, werk dan alleen de auto bij, anders maak een nieuw tijdblok aan
         if ($existing) {
-            // Update car only
             $existing->update(['auto' => $validated['auto']]);
         } else {
-            // Create new time block
             RoosterItem::create([
                 'instructeur_id' => $validated['instructeur_id'],
                 'auto' => $validated['auto'],
@@ -290,26 +313,32 @@ class AgendaController extends Controller
         ]);
     }
 
+    // Verwijder een tijdblok van een instructeur
     public function deleteTimeBlock(Request $request)
     {
+        // Controleer of de gebruiker een instructeur is
         if (auth()->user()->type != 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Valideer de request data
         $validated = $request->validate([
             'instructeur_id' => 'required|exists:users,id',
             'date' => 'required|date_format:Y-m-d',
             'time' => 'required|date_format:H:i',
         ]);
 
+        // Format de datum en tijd
         $datetime = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['time'])
             ->format('d/m/Y H:i:s');
 
+        // Verwijder het tijdblok uit de database
         $deleted = DB::table('rooster_items')
             ->where('instructeur_id', $validated['instructeur_id'])
             ->whereRaw("STR_TO_DATE(datum_en_tijd, '%d/%m/%Y %H:%i:%s') = ?", [$datetime])
-            ->delete(); // delete regardless of car/student
+            ->delete();
 
+        // Return resultaat
         if ($deleted) {
             return response()->json([
                 'success' => true,
@@ -322,17 +351,21 @@ class AgendaController extends Controller
         }
     }
 
+    // Sla een verslag op voor een les
     public function verslagOpslaan(Request $request)
     {
+        // Valideer de request data
         $request->validate([
             'rooster_item_id' => 'required|integer',
             'verslag' => 'required|string|min:5',
         ]);
 
+        // Controleer of er al een verslag bestaat voor de les
         $bestaat = DB::table('verslag')
             ->where('rooster_item_id', $request->rooster_item_id)
             ->exists();
 
+        // Werk het bestaande verslag bij of maak een nieuw verslag aan
         if ($bestaat) {
             DB::table('verslag')
                 ->where('rooster_item_id', $request->rooster_item_id)
@@ -355,12 +388,15 @@ class AgendaController extends Controller
         return redirect()->back()->with('success', 'Verslag opgeslagen.');
     }
 
+    // Verwijder een verslag voor een les
     public function verslagVerwijderen(Request $request)
     {
+        // Valideer de request data
         $request->validate([
             'rooster_item_id' => 'required|integer',
         ]);
 
+        // Verwijder het verslag uit de database
         DB::table('verslag')
             ->where('rooster_item_id', $request->rooster_item_id)
             ->delete();

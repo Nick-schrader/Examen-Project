@@ -4,13 +4,13 @@
 
 <div class="flex items-center justify-center">
 
-    <!-- Open button -->
+    {{-- Knop om strippenkaart toevoegen modal te openen --}}
     <button id="open-strippenkaart"
         class="w-[240px] h-10 bg-eisgeel rounded-md text-lg font-bold text-center flex items-center justify-center hover:bg-yellow-400 cursor-pointer">
         + Strippenkaart toevoegen
     </button>
 
-    <!-- Modal -->
+    {{-- Modal --}}
     <div id="strippenkaart-modal"
          class="fixed inset-0 bg-black bg-opacity-40 hidden z-50 flex items-center justify-center">
 
@@ -24,23 +24,23 @@
             {{-- Content --}}
             <div class="p-8 flex flex-col items-center">
 
-                <!-- Title -->
+                {{-- Titel --}}
                 <h2 class="text-2xl font-bold mb-6 text-center text-eisblue">Strippenkaart toevoegen</h2>
 
-                <!-- User selector -->
+                {{-- Gebruiker selecteren --}}
                 <x-user-selector :selected-user-id="$targetUserId" modal="strippenkaart" />
 
-                <!-- Korting ophalen component -->
+                {{-- Korting ophalen component --}}
                 <div class="mb-6 w-full">
                     <x-Kortingophalen :selected-user-id="$targetUserId" modal="strippenkaart" />
                 </div>
 
-                <!-- LessenAantal -->
+                {{-- LessenAantal --}}
                 <div class="w-full flex justify-center mb-6">
                     <x-lessenAantal :selected-user-id="$targetUserId" />
                 </div>
 
-                <!-- Buttons row -->
+                {{-- Strippenkaart toevoegen knoppen --}}
                 <div class="flex flex-row gap-6 justify-center w-full">
                     @foreach([15,20,25] as $amount)
                         <form method="POST" action="{{ route('strippenkaart.add') }}">

@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('hidden');
     });
 
-    // ⭐ Open modal als ?modal=strippenkaart in URL staat
+    //  Open modal als ?modal=strippenkaart in URL staat
     const params = new URLSearchParams(window.location.search);
     if (params.get('modal') === 'strippenkaart') {
         modal.classList.remove('hidden');
 
-        // ⭐ Verwijder modal=strippenkaart zodat refresh hem NIET opnieuw opent
+        //  Verwijder modal=strippenkaart zodat refresh hem NIET opnieuw opent
         params.delete('modal');
         const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
         window.history.replaceState({}, '', newUrl);

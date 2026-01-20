@@ -1,5 +1,6 @@
 @props(['les' => null, 'verslag' => null])
 
+{{-- Geen les geselecteerd melding --}}
 @if(!$les)
     <div class="bg-red-50 text-red-700 p-4 rounded">
         Geen les geselecteerd.
@@ -15,11 +16,13 @@
         </div>
     @endif
 
+    {{-- Verslag formulier --}}
     <form id="verslag-form" method="POST" action="{{ route('verslag.opslaan') }}">
         @csrf
 
         <input type="hidden" name="rooster_item_id" value="{{ $les->id }}">
 
+        {{-- Verslag tekstgebied --}}
         <textarea
             name="verslag"
             class="bg-white border border-gray-300 rounded-md w-full p-2 resize-none"
@@ -29,12 +32,14 @@
 
     <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
+        {{-- Verslag opslaan knop --}}
         <button type="submit"
                 form="verslag-form"
                 class="bg-eisgroen text-white px-4 py-2 rounded shadow hover:bg-[#a3b97f] transition w-full sm:w-auto">
             {{ $verslag ? 'Verslag bijwerken' : 'Verslag opslaan' }}
         </button>
 
+        {{-- Verslag verwijderen knop --}}
         @if($verslag)
             <form method="POST" action="{{ route('verslag.verwijderen') }}" class="w-full sm:w-auto">
                 @csrf
