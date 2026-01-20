@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
         // Add 4 extra users with specific names, types, and a given hashed password
         $extraUsers = [
             ['naam' => 'admin', 'type' => 3, 'email' => 'admin@example.com'],
-            ['naam' => 'instructeir', 'type' => 2, 'email' => 'instructeir@example.com'],
+            ['naam' => 'instructeur', 'type' => 2, 'email' => 'instructeur@example.com'],
             ['naam' => 'leerling', 'type' => 1, 'email' => 'leerling@example.com'],
             ['naam' => 'guest', 'type' => 0, 'email' => 'guest@example.com'],
         ];
