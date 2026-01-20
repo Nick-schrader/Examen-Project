@@ -4,6 +4,12 @@
 
     @if($les)
 
+        @php
+            $parts = explode(' -=- ', $les->adres);
+            $straat = $parts[0] ?? '';
+            $huisnummer = $parts[1] ?? '';
+        @endphp
+
         <div class="bg-eisgeel rounded-lg p-4 shadow-sm border border-eisgroen/30">
             <h2 class="text-lg font-semibold text-eisblue mb-3">Lesinformatie</h2>
 
@@ -15,8 +21,13 @@
                 </div>
 
                 <div class="flex justify-between">
-                    <span class="font-semibold text-eisblue">Adres:</span>
-                    <span>{{ $les->adres }}</span>
+                    <span class="font-semibold text-eisblue">Straatnaam:</span>
+                    <span>{{ $straat }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span class="font-semibold text-eisblue">Huisnummer:</span>
+                    <span>{{ $huisnummer }}</span>
                 </div>
 
                 <div class="flex justify-between">
