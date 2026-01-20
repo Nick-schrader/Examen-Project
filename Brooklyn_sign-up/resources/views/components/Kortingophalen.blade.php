@@ -5,6 +5,7 @@
             .then(res => res.json())
             .then(data => this.kortingen = data);
     },
+
     verwijderKorting(id) {
         fetch(`/korting/${id}`, {
             method: 'DELETE',

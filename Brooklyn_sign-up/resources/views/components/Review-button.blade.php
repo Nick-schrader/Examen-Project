@@ -1,4 +1,3 @@
-<!-- review popup code -->
 <div x-data="{ showPopUp: false, rating: 0 }" class="p-6 text-gray-900">
     <!-- Open button -->
     <button
@@ -61,4 +60,3 @@
         </div>
     </div>
 </div>
-<!-- Eind review popup code -->

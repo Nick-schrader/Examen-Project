@@ -3,16 +3,13 @@
     $approvedReviews = $reviews->filter(fn($r) => $r->status === 'approved');
     ?>
 
-    <!-- Review grid -->
     <?php if ($approvedReviews->count() > 0): ?>
         <div class="max-w-7xl mx-auto px-6 py-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <?php foreach ($approvedReviews as $review): ?>
                     <div class="bg-eisgeel p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-between border-2 border-eisblue">
-                        
-                        <!-- Naam bovenaan -->
+                        <!-- Naam van de reviewer -->
                         <p class="text-gray-900 font-semibold mb-4"><?= htmlspecialchars($review->reviewer_name) ?></p>
-
                         <!-- Sterren -->
                         <div class="flex items-center mb-4">
                             <div class="flex space-x-1">
@@ -24,8 +21,7 @@
                             </div>
                             <span class="ml-2 text-sm text-gray-500"><?= $review->rating ?>/5</span>
                         </div>
-
-                        <!-- Commentaar -->
+                        <!-- Review -->
                         <p class="text-gray-700 flex-1"><?= htmlspecialchars($review->comment) ?></p>
                     </div>
                 <?php endforeach; ?>
