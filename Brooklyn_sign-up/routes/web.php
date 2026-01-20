@@ -31,13 +31,10 @@ Route::get('/contact', function () {
     return view('contact');
 })->middleware(['auth', 'verified'])->name('contact');
 
-Route::get('/agenda', function () {
-    return view('agenda');
-})->middleware(['auth', 'verified'])->name('agenda');
-
 Route::get('/Beheer', function () {
     return view('Beheer');
 })->middleware(['auth', 'verified'])->name('Beheer');
+
 Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
 
 Route::post('/verslag/toevoegen', [AgendaController::class, 'verslagOpslaan'])

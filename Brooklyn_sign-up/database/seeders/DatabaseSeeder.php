@@ -91,8 +91,13 @@ class DatabaseSeeder extends Seeder
 
         // STRIPPENKAART
         for ($i = 0; $i < 5; $i++) {
+            $leerling = $faker->randomElement($users);
+            if ($leerling->type != 1) {
+                $i--;
+                continue;
+            }
             Strippenkaart::create([
-                'leerling_id' => $faker->randomElement($users)->id,
+                'leerling_id' => $i == 1 ? 13 : $leerling->id,
                 'tegoed' => $faker->numberBetween(1, 20),
                 'verval_datum' => Carbon::now()->addMonths($faker->numberBetween(1, 12))->format('d/m/y H:i:s'),
                 'created_at' => Carbon::now(),
@@ -106,7 +111,6 @@ class DatabaseSeeder extends Seeder
                 'leerling_id' => $faker->randomElement($users)->id,
                 'percentage' => $faker->numberBetween(5, 50),
                 'reason' => $faker->sentence,
-                'is_used' => $faker->boolean,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -114,7 +118,13 @@ class DatabaseSeeder extends Seeder
 
         // ROOSTER ITEMS
         $roosterItems = [];
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
+            $leerling = $faker->randomElement($users)->id;
+            $instructeur = $faker->randomElement($users)->id;
+            if ($leerling->type !== 1 || $instructeur->type !== 2) {
+                $i--;
+                continue;
+            }
             $roosterItems[] = RoosterItem::create([
                 'leerling_id' => $faker->randomElement($users)->id,
                 'instructeur_id' => $faker->randomElement($users)->id,
