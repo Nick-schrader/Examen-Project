@@ -14,7 +14,7 @@
     <div id="strippenkaart-modal"
          class="fixed inset-0 bg-black bg-opacity-40 hidden z-50 flex items-center justify-center">
 
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden ml-[20px] mr-[20px]">
 
             {{-- Header --}}
             <div class="bg-eisblue text-white px-4 py-3 flex items-center justify-between">

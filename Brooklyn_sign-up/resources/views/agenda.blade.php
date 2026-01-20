@@ -8,8 +8,9 @@
                 <x-user-selector :selected-user-id="request('user')" />
             @endif
 
-            <div class="flex flex-col gap-[10px] {{ Auth::user()->type == 2 ? '' : 'hidden' }}">
+            <div class="flex flex-col gap-5 md:flex-row md:justify-between md:w-full md:max-w-[1155px] {{ Auth::user()->type == 2 ? '' : 'hidden' }}">
                 <x-strippenkaart-toevoegen />
+                <x-overzichtVerslag :alleVerslagen="$alleVerslagen" :startOfWeek="$startOfWeek" />
             </div>
         </div>
     </div>

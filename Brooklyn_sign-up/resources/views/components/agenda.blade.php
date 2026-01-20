@@ -10,7 +10,7 @@
 ])
 
 <div class="flex justify-center w-full mt-6">
-<div class="w-full max-w-6xl overflow-hidden shadow-2xl bg-eisgeel rounded-2xl">
+<div class="w-full max-w-6xl ml-[20px] mr-[20px] overflow-hidden shadow-2xl bg-eisgeel rounded-2xl">
     <div class="flex">
         <div class="flex flex-1 flex-col md:flex-row">
 

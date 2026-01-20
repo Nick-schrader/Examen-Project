@@ -120,6 +120,21 @@ class AgendaController extends Controller
                 ->first();
         }
 
+        $targetUserId = $request->input('user');
+
+        $alleVerslagen = collect();
+
+        if ($targetUserId) {
+            $alleVerslagen = DB::table('verslag')
+                ->join('rooster_items', 'verslag.rooster_item_id', '=', 'rooster_items.id')
+                ->join('users as leerling', 'rooster_items.leerling_id', '=', 'leerling.id')
+                ->select('verslag.*', 'rooster_items.datum_en_tijd', 'leerling.naam as leerling_naam')
+                ->where('rooster_items.instructeur_id', auth()->id())
+                ->where('rooster_items.leerling_id', $targetUserId) // ⭐ filter op leerling
+                ->orderBy('verslag.created_at', 'desc')
+                ->get();
+        }
+
         return view('agenda', [
             'les' => $les,
             'verslag' => $verslag,
@@ -129,7 +144,9 @@ class AgendaController extends Controller
             'next' => $next,
             'days' => $days,
             'timeBlocks' => $timeBlocks,
+            'alleVerslagen' => $alleVerslagen,
         ]);
+
     }
 
     public function verslagOpslaan(Request $request)
